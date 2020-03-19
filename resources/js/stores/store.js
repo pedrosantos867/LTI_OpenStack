@@ -5,16 +5,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        //token: "",
-        //user: null
+        token: "",
+        user: null
     },
     mutations: {//synch
-        /*
+        
         //guardar token no Vuex e na session e adicionar o token aos headers do pedidos à API
         setToken: (state, token) => {
             state.token = token;
             sessionStorage.setItem('token', token);
-            axios.defaults.headers.common.Authorization = "Bearer " + token;
+            axios.defaults.headers.common.Authorization = token;
         },
         clearToken: (state) => {
             state.token = "";
@@ -23,7 +23,7 @@ export default new Vuex.Store({
         },
         setUser: (state, user) => {
             state.user = user;
-            sessionStorage.setItem('user', JSON.stringify(user));
+            sessionStorage.setItem('user', user);
         },
         clearUser: (state) => {
             state.user = null;
@@ -49,7 +49,7 @@ export default new Vuex.Store({
                 state.user = JSON.parse(user);
             }
         }
-        */
+
     },
     actions: {//async
 

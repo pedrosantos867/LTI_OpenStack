@@ -9,6 +9,10 @@ import Vuex from 'vuex'
 
 import Home from './components/home'
 import Login from './components/login'
+import Logout from './components/logout'
+import ProjectsList from './components/projectsList'
+
+
 import ExampleComponent from './components/ExampleComponent'
 
 Vue.use(Vuex)
@@ -19,8 +23,10 @@ Vue.use(VueRouter)
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 const routes = [
+    { path: '/', component: Login },
     { path: '/login', component: Login },
-    { path: '/', component: Home }   
+    { path: '/logout', component: Logout },
+    { path: '/projectsList', component: ProjectsList }   
 ]
 
 const router = new VueRouter({
@@ -39,5 +45,6 @@ const app = new Vue({
 
     },
     created() {
+        //this.$store.commit('loadTokenAndUserFromSession');
     }
 });

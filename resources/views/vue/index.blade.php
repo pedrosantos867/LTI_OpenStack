@@ -15,36 +15,26 @@
         <ul class="nav navbar-nav navbar-right" >
             
             <li class="nav-item">
-                <router-link  class="nav-link" to="/login">Login</router-link>
+                <router-link  class="nav-link" v-if="!this.$store.state.token" to="/login">Login</router-link>
             </li>
-            
-            <!--
+
+            <router-link  class="nav-link" to="/projectsList" v-if="this.$store.state.token">Lista de Projetos</router-link>
+            <router-link  class="nav-link" to="/logout" v-if="this.$store.state.token">Logout</router-link>
+
             {{-- Dropdown --}}
             <li class="nav-item dropdown" v-if="this.$store.state.token">
                 <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                Account
+                  Account
 
                 </a>
                 <div class="dropdown-menu">
-                    <router-link class="dropdown-item" to="/profile" v-if="this.$store.state.token" >Profile</router-link>
-                    <router-link class="dropdown-item" to="/profile/edit" v-if="this.$store.state.token" >Edit Profile</router-link>
-                    <router-link class="dropdown-item" to="/wallet" v-if="this.$store.state.token && this.$store.state.user.type === 'u'" >Wallet</router-link>
+                    <router-link class="dropdown-item" to="/projectsList" v-if="this.$store.state.token" >Profile</router-link>
+                    <router-link class="dropdown-item" to="/projectsList" v-if="this.$store.state.token" >Edit Profile</router-link>
+                    <router-link class="dropdown-item" to="/projectsList" v-if="this.$store.state.token">Wallet</router-link>
                     <div class="dropdown-divider"></div>
                     <router-link  class="dropdown-item" to="/logout" v-if="this.$store.state.token">Logout</router-link>
                 </div>
             </li>
-            <li class="nav-item dropdown" v-if="this.$store.state.token">
-                <div v-if="this.$store.state.user.photo !== null">
-                    <img
-                    :src="`./storage/fotos/${this.$store.state.user.photo}`"
-                    style="border-radius: 50%; height:40px;width:40px;"
-                    />
-                </div>
-                <div v-else>
-                    <img :src="`./storage/fotos/default.png`" style="border-radius: 50%; height:40px;width:40px;"  height="50px" width="50px" />
-                </div>
-            </li>
-            -->
         </ul>
     </div>
 </nav>

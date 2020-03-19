@@ -1,36 +1,48 @@
 <template>
     <div>
-        <h2>Login</h2>
+        <h2>{{ title }}</h2>
         <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" v-model="username" name="username" class="form-control" :class="{ 'is-invalid': submitted && !username }" />
-                <div v-show="submitted && !username" class="invalid-feedback">Username is required</div>
-            </div>
-            <div class="form-group">
-                <label htmlFor="password">Password</label>
-                <input type="password" v-model="password" name="password" class="form-control" :class="{ 'is-invalid': submitted && !password }" />
-                <div v-show="submitted && !password" class="invalid-feedback">Password is required</div>
+            <div class="form-group line">
+                <div class="col-xs-4">
+                    <label for="username">Username</label>
+                    <input type="text" v-model="userData.username" name="username" class="form-control " required />
+                </div>
+                <div class="col-xs-4">
+                    <label htmlFor="password">Password</label>
+                    <input type="password" v-model="userData.password" name="password" class="form-control" required />
+                </div>
             </div>
         </form>
+        
+        <div
+            id="error"
+            class="alert alert-danger"
+            role="alert"
+            hidden
+         >Please type your credentials to login</div>
+
         <div>
             <button type="button" class="btn btn-primary" v-on:click.prevent="login">Login</button>
         </div>
     </div>
 </template>
 <script>
-
     export default {
-        data () {
+        data: function() {
             return {
-                username: '',
-                password: '',
-                submitted: false
-            }
+                title: "Login",
+                userData: {
+                    username: null,
+                    password: null
+                }
+            };
         },
         methods: {
             login: function() {
-
+                if (!this.userData.username || !this.userData.password) {
+                    document.querySelector("#error").hidden = false;
+                     return;
+                }
                 let payload = 
                 {
                     "auth": {
@@ -40,11 +52,11 @@
                             ],
                             "password": {
                                 "user": {
-                                    "name": "demo",
+                                    "name": this.userData.username,
                                     "domain": {
                                         "name": "Default"
                                     },
-                                    "password": "devstack"
+                                    "password": this.userData.password
                                 }
                             }
                         }
@@ -56,8 +68,20 @@
                         'Content-Type': 'application/json',
                     },
                 }).then(response => {
-                    console.log(response);
-                })
+                    if(response.headers["x-subject-token"]){
+                        this.$store.commit("setToken", response.headers["x-subject-token"]);
+                        this.$store.commit("setUser", this.userData.username);
+                        this.$router.push("/projectsList");
+                    }
+                    //console.log(this.userData.username);
+                    //console.log(response);
+                }).catch(err => {
+                    this.$store.commit("clearUserAndToken");
+                    //console.log(err.response.data.msg);
+                    document.querySelector("#error").hidden = false;
+                    document.querySelector("#error").innerHTML = "Dados inválidos";
+                    //document.querySelector("#error").innerHTML = err.response.data.msg;
+                });
             }
         },
         mounted() {
@@ -67,4 +91,5 @@
 
     
     }
+
 </script>
