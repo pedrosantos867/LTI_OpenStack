@@ -48,8 +48,6 @@
         </ul>
     </div>
 </nav>
-<h1>Pagina inicial do OpenStack</h1>
-
 <router-view class="container" style="padding:20px;"></router-view>
 
 @endsection
