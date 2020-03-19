@@ -3,7 +3,6 @@
 @section('title', 'Open Stack')
 
 @section('content')
-
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
     <router-link class="navbar-brand" to="/">OpenStack</router-link>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,9 +14,6 @@
         </ul>
         <ul class="nav navbar-nav navbar-right" >
             
-
-            <a class="btn btn-primary" href="#" role="button">Link</a>
-
             <li class="nav-item">
                 <router-link  class="nav-link" to="/login">Login</router-link>
             </li>

@@ -13,5 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-#Route::get('/', 'VueController@index');
-Route::view('/{path?}', 'index')->where('path', '.');
+Route::get('/', 'VueController@index');
+#Route::view('/{path?}', '/vue/index')->where('path', '.');
