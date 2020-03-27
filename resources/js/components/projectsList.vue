@@ -1,14 +1,25 @@
+
+        
 <template>
-    <div>
-        <h2>{{ title }}</h2>
-        
-        <ul>
-            <li v-for="project in projectList.projects" :key="project.name">
-                {{ project.name }}
-            </li>
-        </ul>
-        
-    </div>
+	<table class="table table-striped">
+        <h2></h2>
+	    <thead>
+	        <tr>
+	            <th>{{ title }}</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr v-for="project in projectList.projects" :key="project.name">
+                <td>{{ project.name }}  </td>
+
+            <button type="button" class="btn btn-primary">Edit Project</button>
+              
+            <button type="button" class="btn btn-danger">Delete Project</button>
+
+	        </tr>
+
+	    </tbody>
+	</table>
 </template>
 <script>
     export default {
@@ -30,6 +41,7 @@
                     //console.log(this.projectList);
                 });
             }
+            
         },
         mounted() {
             this.getProjects()

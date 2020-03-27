@@ -2111,6 +2111,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -37746,14 +37757,28 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h2", [_vm._v(_vm._s(_vm.title))]),
+  return _c("table", { staticClass: "table table-striped" }, [
+    _c("h2"),
+    _vm._v(" "),
+    _c("thead", [_c("tr", [_c("th", [_vm._v(_vm._s(_vm.title))])])]),
     _vm._v(" "),
     _c(
-      "ul",
+      "tbody",
       _vm._l(_vm.projectList.projects, function(project) {
-        return _c("li", { key: project.name }, [
-          _vm._v("\n            " + _vm._s(project.name) + "\n        ")
+        return _c("tr", { key: project.name }, [
+          _c("td", [_vm._v(_vm._s(project.name) + "  ")]),
+          _vm._v(" "),
+          _c(
+            "button",
+            { staticClass: "btn btn-primary", attrs: { type: "button" } },
+            [_vm._v("Edit Project")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            { staticClass: "btn btn-danger", attrs: { type: "button" } },
+            [_vm._v("Delete Project")]
+          )
         ])
       }),
       0
@@ -54469,8 +54494,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
