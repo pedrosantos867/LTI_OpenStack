@@ -10,8 +10,28 @@
                 <button v-on:click=changeProject(project)>{{ project.name }}</button>
             </li>
         </ul>
+
         
-    </div>
+<template>
+	<table class="table table-striped">
+        <h2></h2>
+	    <thead>
+	        <tr>
+	            <th>{{ title }}</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr v-for="project in projectList.projects" :key="project.name">
+                <td>{{ project.name }}  </td>
+
+            <button type="button" class="btn btn-primary">Edit Project</button>
+              
+            <button type="button" class="btn btn-danger">Delete Project</button>
+
+	        </tr>
+
+	    </tbody>
+	</table>
 </template>
 <script>
     export default {
@@ -69,6 +89,7 @@
                     this.$router.push("/projectDetails");
                 });
             }
+            
         },
         mounted() {
             this.getProjects()
