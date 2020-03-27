@@ -11,6 +11,8 @@ import Home from './components/home'
 import Login from './components/login'
 import Logout from './components/logout'
 import ProjectsList from './components/projectsList'
+import ProjectDetails from './components/projectDetails'
+import CreateInstance from './components/createInstance'
 
 
 import ExampleComponent from './components/ExampleComponent'
@@ -26,7 +28,9 @@ const routes = [
     { path: '/', component: Login },
     { path: '/login', component: Login },
     { path: '/logout', component: Logout },
-    { path: '/projectsList', component: ProjectsList }   
+    { path: '/projectsList', component: ProjectsList },   
+    { path: '/projectDetails', component: ProjectDetails },
+    { path: '/createInstance', component: CreateInstance }
 ]
 
 const router = new VueRouter({

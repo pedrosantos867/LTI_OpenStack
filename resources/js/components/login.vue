@@ -71,6 +71,8 @@
                     if(response.headers["x-subject-token"]){
                         this.$store.commit("setToken", response.headers["x-subject-token"]);
                         this.$store.commit("setUser", this.userData.username);
+                        this.$store.state.userID = response.data.token.user.id
+                        this.$store.state.userPassword = this.userData.password
                         this.$router.push("/projectsList");
                     }
                     //console.log(this.userData.username);

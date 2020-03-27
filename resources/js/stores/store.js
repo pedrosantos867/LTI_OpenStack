@@ -6,7 +6,12 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         token: "",
-        user: null
+        user: null,
+        userID: null,
+        currentProjectName: "",
+        currentProjectID: null,
+        projectScopedToken: "",
+        userPassword: null
     },
     mutations: {//synch
         
