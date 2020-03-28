@@ -63,7 +63,7 @@
                     }
                 }
 
-                axios.post('http://134.122.49.176/identity/v3/auth/tokens', payload, {
+                axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
                     headers: {
                         'Content-Type': 'application/json',
                     },

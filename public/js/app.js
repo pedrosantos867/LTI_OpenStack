@@ -2121,7 +2121,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       };
-      axios.post('http://134.122.49.176/identity/v3/auth/tokens', payload, {
+      axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -2295,7 +2295,7 @@ __webpack_require__.r(__webpack_exports__);
     getInstances: function getInstances() {
       var _this = this;
 
-      axios.get('http://134.122.49.176/compute/v2.1/servers', {
+      axios.get(this.$store.state.url + '/compute/v2.1/servers', {
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-Token': this.$store.state.projectScopedToken
@@ -2328,7 +2328,7 @@ __webpack_require__.r(__webpack_exports__);
       var i;
 
       for (var _i = 0; _i < this.instancesList.length; _i++) {
-        axios.get('http://134.122.49.176/compute/v2.1/servers/' + this.instancesList[_i].id, {
+        axios.get(this.$store.state.url + '/compute/v2.1/servers/' + this.instancesList[_i].id, {
           headers: {
             'Content-Type': 'application/json',
             'X-Auth-Token': this.$store.state.projectScopedToken
@@ -2345,7 +2345,7 @@ __webpack_require__.r(__webpack_exports__);
     getImagesDetails: function getImagesDetails() {
       var _this3 = this;
 
-      axios.get('http://134.122.49.176/compute/v2.1/images', {
+      axios.get(this.$store.state.url + '/compute/v2.1/images', {
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-Token': this.$store.state.projectScopedToken
@@ -2373,7 +2373,7 @@ __webpack_require__.r(__webpack_exports__);
     getFlavorsDetails: function getFlavorsDetails() {
       var _this4 = this;
 
-      axios.get('http://134.122.49.176/compute/v2.1/flavors', {
+      axios.get(this.$store.state.url + '/compute/v2.1/flavors', {
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-Token': this.$store.state.projectScopedToken
@@ -2430,7 +2430,7 @@ __webpack_require__.r(__webpack_exports__);
     getProjects: function getProjects() {
       var _this = this;
 
-      axios.get('http://134.122.49.176/identity/v3/auth/projects', {
+      axios.get(this.$store.state.url + '/identity/v3/auth/projects', {
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-Token': this.$store.state.token
@@ -2462,7 +2462,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       };
-      axios.post('http://134.122.49.176/identity/v3/auth/tokens', payload, {
+      axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -55152,6 +55152,7 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
+    url: "http://134.122.49.176",
     token: "",
     user: null,
     userID: null,

@@ -21,7 +21,7 @@
         },
         methods: {
             getProjects: function() {
-                axios.get('http://134.122.49.176/identity/v3/auth/projects',{
+                axios.get(this.$store.state.url + '/identity/v3/auth/projects',{
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Auth-Token': this.$store.state.token
@@ -57,7 +57,7 @@
                     }
                 }
 
-                axios.post('http://134.122.49.176/identity/v3/auth/tokens', payload, {
+                axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
                     headers: {
                         'Content-Type': 'application/json',
                     },

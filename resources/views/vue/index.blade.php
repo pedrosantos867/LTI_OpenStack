@@ -18,24 +18,10 @@
                 <router-link  class="nav-link" v-if="!this.$store.state.token" to="/login">Login</router-link>
             </li>
             
-            <router-link  class="nav-link" to="/projectCreate" v-if="this.$store.state.token">Criar Projetos</router-link>
+            <router-link  class="nav-link" to="/projectCreate" v-if="this.$store.state.token">Criar Projeto</router-link>
             <router-link  class="nav-link" to="/projectsList" v-if="this.$store.state.token">Lista de Projetos</router-link>
+
             <router-link  class="nav-link" to="/logout" v-if="this.$store.state.token">Logout</router-link>
-
-            {{-- Dropdown --}}
-            <li class="nav-item dropdown" v-if="this.$store.state.token">
-                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                  Account
-
-                </a>
-                <div class="dropdown-menu">
-                    <router-link class="dropdown-item" to="/projectsList" v-if="this.$store.state.token" >Profile</router-link>
-                    <router-link class="dropdown-item" to="/projectsList" v-if="this.$store.state.token" >Edit Profile</router-link>
-                    <router-link class="dropdown-item" to="/projectsList" v-if="this.$store.state.token">Edit Permissions</router-link>
-                    <div class="dropdown-divider"></div>
-                    <router-link  class="dropdown-item" to="/logout" v-if="this.$store.state.token">Logout</router-link>
-                </div>
-            </li>
         </ul>
     </div>
 </nav>

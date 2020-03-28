@@ -93,7 +93,7 @@
         },
         methods: {
             getInstances: function() {
-                axios.get('http://134.122.49.176/compute/v2.1/servers',{
+                axios.get(this.$store.state.url + '/compute/v2.1/servers',{
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Auth-Token': this.$store.state.projectScopedToken
@@ -120,7 +120,7 @@
             getAllInstancesDetails: function() {
                 let i;
                 for(let i = 0; i < this.instancesList.length; i++){
-                    axios.get('http://134.122.49.176/compute/v2.1/servers/' + this.instancesList[i].id,{
+                    axios.get(this.$store.state.url + '/compute/v2.1/servers/' + this.instancesList[i].id,{
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Auth-Token': this.$store.state.projectScopedToken
@@ -134,7 +134,7 @@
                 console.log(this.instancesDetails)
             },
             getImagesDetails: function() {
-                axios.get('http://134.122.49.176/compute/v2.1/images',{
+                axios.get(this.$store.state.url + '/compute/v2.1/images',{
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Auth-Token': this.$store.state.projectScopedToken
@@ -159,7 +159,7 @@
                 }
             },
             getFlavorsDetails: function() {
-                axios.get('http://134.122.49.176/compute/v2.1/flavors',{
+                axios.get(this.$store.state.url + '/compute/v2.1/flavors',{
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Auth-Token': this.$store.state.projectScopedToken

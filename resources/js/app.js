@@ -21,7 +21,6 @@ Vue.use(Vuex)
 Vue.use(VueRouter)
 
 
-
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 const routes = [
