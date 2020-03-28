@@ -5,33 +5,35 @@
         <h5>Escolha um dos projetos a baixo</h5>
         <br>
 
-        <ul>
+  <!--       <ul>
             <li v-for="project in projectList.projects" :key="project.name">
-                <button v-on:click=changeProject(project)>{{ project.name }}</button>
+                <button v-on:click= changeProject(project)>{{ project.name }}</button>
             </li>
-        </ul>
-
-        
-<template>
+        </ul> -->
+          <div>
 	<table class="table table-striped">
-        <h2></h2>
 	    <thead>
 	        <tr>
-	            <th>{{ title }}</th>
+                
+	            <th>Nome</th>
+                <th>Ações</th>
+                
 	        </tr>
 	    </thead>
 	    <tbody>
 	        <tr v-for="project in projectList.projects" :key="project.name">
                 <td>{{ project.name }}  </td>
-
-            <button type="button" class="btn btn-primary">Edit Project</button>
-              
-            <button type="button" class="btn btn-danger">Delete Project</button>
+                <td>
+                <button type="button" v-on:click= changeProject(project) class="btn btn-primary">Edit Project</button>
+                <button type="button" class="btn btn-danger">Delete Project</button>
+                </td>
 
 	        </tr>
 
 	    </tbody>
 	</table>
+      </div>
+    </div>
 </template>
 <script>
     export default {
@@ -88,6 +90,10 @@
                     this.$store.state.projectScopedToken =response.headers["x-subject-token"]
                     this.$router.push("/projectDetails");
                 });
+            },
+
+            deleteProject: function(project){
+
             }
             
         },
