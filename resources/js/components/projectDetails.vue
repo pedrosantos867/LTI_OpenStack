@@ -4,7 +4,12 @@
         <br>
 
         <button class="btn btn-primary"  v-on:click="createInstance()">Criar nova instância</button><br>
+        <br><br>
 
+        <div v-if="instancesList.length">
+                <h5>Showing {{ instancesList.length }} items</h5>
+        </div>
+        
         <div v-if=instancesList.length>
             <div>
                 <table class="table table-striped">
@@ -12,7 +17,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Image name</th>
-                            <th>IP Adress</th>
+                            <th>IP Adressess (Private, public, shared)</th>
                             <th>Flavor</th>
                             <th>Key Pair</th>
                             <th>Status</th>
@@ -22,15 +27,39 @@
                     </thead>
                     <tbody>
                         <tr v-for="instance in instancesDetails" :key="instance">
+                            
                             <td>{{ instance.name }}</td>
-                            <td v-if="instance.image == null">Boot from volume</td>
-                            <td v-else>{{instance.image}}</td>
-                            <td>{{ instance.addresses.shared[0].addr }}</td>
-                            <td>{{ instance.flavor.id }}</td>
+
+                            <td v-if='instance.image.id == null'>Boot from volume</td>
+                            <td v-else>{{ verificarImage(instance.image.id) }}</td>
+                            
+                            <td>
+                                <div v-for="ip in instance.addresses.private" :key="ip">
+                                    {{ip.addr}}
+                                </div>
+                                <div v-for="ip in instance.addresses.shared" :key="ip">
+                                    {{ip.addr}}
+                                </div>
+                                <div v-for="ip in instance.addresses.public" :key="ip">
+                                    {{ip.addr}}
+                                </div>
+                            </td>
+
+                            <td>{{ verificarFlavor(instance.flavor.id) }}</td>
+                            
                             <td v-if="instance.key_name == null">-</td>
                             <td v-else>{{instance.key_name}}</td>
-                            <td>{{ instance.status }}</td>
-                            <td>{{ instance.host_status  }}</td>                            
+                            
+                            <td>{{ instance['OS-EXT-STS:vm_state']}}</td>
+                            
+                            <td v-if="instance['OS-EXT-STS:power_state'] == null">-</td>
+                            <td v-else-if="instance['OS-EXT-STS:power_state'] == 0"> NOSTATE </td>
+                            <td v-else-if="instance['OS-EXT-STS:power_state'] == 1"> RUNNING </td>
+                            <td v-else-if="instance['OS-EXT-STS:power_state'] == 3"> PAUSED </td>
+                            <td v-else-if="instance['OS-EXT-STS:power_state'] == 4"> SHUTDOWN </td>
+                            <td v-else-if="instance['OS-EXT-STS:power_state'] == 6"> CRASHED </td>
+                            <td v-else-if="instance['OS-EXT-STS:power_state'] == 7"> SUSPENDED </td>
+                            
                             <td>                    
                                 <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance.id)">Editar</button>
                                 <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance.id)">Remover</button>
@@ -43,6 +72,11 @@
         <div v-else>
                 <h5>Não existem instâncias neste projeto</h5>
         </div>
+
+        <div v-if="instancesList.length">
+            <h5>Showing {{ instancesList.length }} items</h5>
+        </div><br>
+
         <button v-on:click=goBack()>Voltar para a lista de projetos</button>
     </div>
 </template>
@@ -52,7 +86,9 @@
             return {
                 title: "Lista de instancias do projeto " +  this.$store.state.currentProjectName,
                 instancesList: [],
-                instancesDetails: []
+                instancesDetails: [],
+                imagesDetails:[],
+                flavorsDetails:[]
             };
         },
         methods: {
@@ -65,6 +101,8 @@
                 }).then(response => {
                     this.instancesList = response.data.servers
                     this.getAllInstancesDetails()
+                    this.getImagesDetails()
+                    this.getFlavorsDetails()
                 });
             },
             goBack: function() {
@@ -94,6 +132,48 @@
                     });
                 }
                 console.log(this.instancesDetails)
+            },
+            getImagesDetails: function() {
+                axios.get('http://134.122.49.176/compute/v2.1/images',{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.projectScopedToken
+                    },
+                }).then(response => {
+                    for(let i=0; i<response.data.images.length; i++){
+                        this.imagesDetails.push(response.data.images)
+                    }
+                    console.log(this.imagesDetails)
+                });
+            },
+            verificarImage: function(imageAVerificar){
+                for(let i=0; i < this.imagesDetails.length; i++){
+                    /*
+                    console.log("Imagem a verificar" + imageAVerificar)
+                    console.log(this.imagesDetails[i][0].id)
+                    */
+                    if(this.imagesDetails[i][0].id == imageAVerificar){
+                        //console.log(this.imagesDetails[i][0].name)
+                        return this.imagesDetails[i][0].name
+                    }
+                }
+            },
+            getFlavorsDetails: function() {
+                axios.get('http://134.122.49.176/compute/v2.1/flavors',{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.projectScopedToken
+                    },
+                }).then(response => {
+                    this.flavorsDetails = response.data.flavors
+                });
+            },
+            verificarFlavor: function(flavorAverificar) {
+                 for(let i=0; i < this.flavorsDetails.length; i++){
+                    if(this.flavorsDetails[i].id == flavorAverificar){
+                        return this.flavorsDetails[i].name
+                    }
+                }
             }
         },
         mounted() {

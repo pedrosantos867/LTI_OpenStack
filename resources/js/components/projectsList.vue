@@ -5,6 +5,7 @@
         <h5>Escolha um dos projetos a baixo</h5>
         <br>
 
+<<<<<<< HEAD
   <!--       <ul>
             <li v-for="project in projectList.projects" :key="project.name">
                 <button v-on:click= changeProject(project)>{{ project.name }}</button>
@@ -33,6 +34,12 @@
 	    </tbody>
 	</table>
       </div>
+=======
+        <dir v-for="project in projectList.projects" :key="project.name">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" v-on:click=changeProject(project)>{{ project.name }}</button>
+        </dir>
+
+>>>>>>> f7c9715bf2f7519217603131d66b7039d1482676
     </div>
 </template>
 <script>
