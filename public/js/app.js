@@ -2419,6 +2419,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2472,7 +2503,8 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.$router.push("/projectDetails");
       });
-    }
+    },
+    deleteProject: function deleteProject(project) {}
   },
   mounted: function mounted() {
     this.getProjects();
@@ -38339,7 +38371,49 @@ var render = function() {
       _c("h5", [_vm._v("Escolha um dos projetos a baixo")]),
       _vm._v(" "),
       _c("br"),
+      _vm._v("\n\n<<<<<<< HEAD\n  "),
       _vm._v(" "),
+      _c("div", [
+        _c("table", { staticClass: "table table-striped" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.projectList.projects, function(project) {
+              return _c("tr", { key: project.name }, [
+                _c("td", [_vm._v(_vm._s(project.name) + "  ")]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.changeProject(project)
+                        }
+                      }
+                    },
+                    [_vm._v("Edit Project")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-danger",
+                      attrs: { type: "button" }
+                    },
+                    [_vm._v("Delete Project")]
+                  )
+                ])
+              ])
+            }),
+            0
+          )
+        ])
+      ]),
+      _vm._v("\n=======\n        "),
       _vm._l(_vm.projectList.projects, function(project) {
         return _c("dir", { key: project.name }, [
           _c(
@@ -38361,12 +38435,26 @@ var render = function() {
             [_vm._v(_vm._s(project.name))]
           )
         ])
-      })
+      }),
+      _vm._v("\n\n>>>>>>> f7c9715bf2f7519217603131d66b7039d1482676\n    ")
     ],
     2
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Nome")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Ações")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -55229,8 +55317,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
