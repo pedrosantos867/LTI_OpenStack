@@ -2351,22 +2351,22 @@ __webpack_require__.r(__webpack_exports__);
           'X-Auth-Token': this.$store.state.projectScopedToken
         }
       }).then(function (response) {
-        for (var i = 0; i < response.data.images.length; i++) {
-          _this3.imagesDetails.push(response.data.images);
-        }
+        //for(let i=0; i<response.data.images.length; i++){
+        _this3.imagesDetails.push(response.data.images); //}
+        //console.log(this.imagesDetails)
 
-        console.log(_this3.imagesDetails);
       });
     },
     verificarImage: function verificarImage(imageAVerificar) {
-      for (var i = 0; i < this.imagesDetails.length; i++) {
+      for (var i = 0; i < this.imagesDetails[0].length; i++) {
         /*
+        console.log(i)
         console.log("Imagem a verificar" + imageAVerificar)
-        console.log(this.imagesDetails[i][0].id)
+        console.log(this.imagesDetails[0][i].id)
         */
-        if (this.imagesDetails[i][0].id == imageAVerificar) {
+        if (this.imagesDetails[0][i].id == imageAVerificar) {
           //console.log(this.imagesDetails[i][0].name)
-          return this.imagesDetails[i][0].name;
+          return this.imagesDetails[0][i].name;
         }
       }
     },
@@ -2450,6 +2450,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2467,7 +2470,7 @@ __webpack_require__.r(__webpack_exports__);
           'X-Auth-Token': this.$store.state.token
         }
       }).then(function (response) {
-        _this.projectList = response.data; //console.log(this.projectList);
+        _this.projectList = response.data;
       });
     },
     changeProject: function changeProject(project) {
@@ -2504,7 +2507,12 @@ __webpack_require__.r(__webpack_exports__);
         _this2.$router.push("/projectDetails");
       });
     },
-    deleteProject: function deleteProject(project) {}
+    deleteProject: function deleteProject(project) {
+      console.log(project);
+    },
+    updateProject: function updateProject(project) {
+      console.log(project);
+    }
   },
   mounted: function mounted() {
     this.getProjects();
@@ -38195,31 +38203,31 @@ var render = function() {
                     _c(
                       "td",
                       [
-                        _vm._l(instance.addresses.private, function(ip) {
-                          return _c("div", { key: ip }, [
+                        _vm._l(instance.addresses.private, function(privateIP) {
+                          return _c("div", { key: privateIP }, [
                             _vm._v(
                               "\n                                " +
-                                _vm._s(ip.addr) +
+                                _vm._s(privateIP.addr) +
                                 "\n                            "
                             )
                           ])
                         }),
                         _vm._v(" "),
-                        _vm._l(instance.addresses.shared, function(ip) {
-                          return _c("div", { key: ip }, [
+                        _vm._l(instance.addresses.shared, function(sharedIP) {
+                          return _c("div", { key: sharedIP }, [
                             _vm._v(
                               "\n                                " +
-                                _vm._s(ip.addr) +
+                                _vm._s(sharedIP.addr) +
                                 "\n                            "
                             )
                           ])
                         }),
                         _vm._v(" "),
-                        _vm._l(instance.addresses.public, function(ip) {
-                          return _c("div", { key: ip }, [
+                        _vm._l(instance.addresses.public, function(publicIP) {
+                          return _c("div", { key: publicIP }, [
                             _vm._v(
                               "\n                                " +
-                                _vm._s(ip.addr) +
+                                _vm._s(publicIP.addr) +
                                 "\n                            "
                             )
                           ])
@@ -38361,96 +38369,120 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h2", [_vm._v(_vm._s(_vm.title))]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _c("h5", [_vm._v("Escolha um dos projetos a baixo")]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v("\n\n<<<<<<< HEAD\n  "),
-      _vm._v(" "),
-      _c("div", [
-        _c("table", { staticClass: "table table-striped" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.projectList.projects, function(project) {
-              return _c("tr", { key: project.name }, [
-                _c("td", [_vm._v(_vm._s(project.name) + "  ")]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button" },
-                      on: {
-                        click: function($event) {
-                          return _vm.changeProject(project)
-                        }
-                      }
-                    },
-                    [_vm._v("Edit Project")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-danger",
-                      attrs: { type: "button" }
-                    },
-                    [_vm._v("Delete Project")]
-                  )
-                ])
-              ])
-            }),
-            0
-          )
+  return _c("div", [
+    _c("h2", [_vm._v(_vm._s(_vm.title))]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("h5", [_vm._v("Escolha um dos projetos a baixo")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm.projectList.projects.length
+      ? _c("div", [
+          _c("h5", [
+            _vm._v(
+              "Showing " + _vm._s(_vm.projectList.projects.length) + " items"
+            )
+          ])
         ])
-      ]),
-      _vm._v("\n=======\n        "),
-      _vm._l(_vm.projectList.projects, function(project) {
-        return _c("dir", { key: project.name }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary btn-lg btn-block",
-              attrs: {
-                type: "button",
-                "data-toggle": "button",
-                "aria-pressed": "false",
-                autocomplete: "off"
-              },
-              on: {
-                click: function($event) {
-                  return _vm.changeProject(project)
-                }
-              }
-            },
-            [_vm._v(_vm._s(project.name))]
-          )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.projectList.projects.length
+      ? _c("div", [
+          _c("div", [
+            _c("table", { staticClass: "table" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.projectList.projects, function(project) {
+                  return _c("tr", { key: project }, [
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary btn-lg btn-block",
+                          attrs: {
+                            type: "button",
+                            "data-toggle": "button",
+                            "aria-pressed": "false",
+                            autocomplete: "off"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.changeProject(project)
+                            }
+                          }
+                        },
+                        [_vm._v(_vm._s(project.name))]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-lg btn-warning ",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.updateProject(project.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Update")]
+                      ),
+                      _vm._v(
+                        "\n                             \n                            "
+                      ),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-lg btn-danger ",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteProject(project.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Delete")]
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ])
         ])
-      }),
-      _vm._v("\n\n>>>>>>> f7c9715bf2f7519217603131d66b7039d1482676\n    ")
-    ],
-    2
-  )
+      : _c("div", [_c("h5", [_vm._v("Não existem projetos")])]),
+    _vm._v(" "),
+    _vm.projectList.projects.length
+      ? _c("div", [
+          _c("h5", [
+            _vm._v(
+              "Showing " + _vm._s(_vm.projectList.projects.length) + " items"
+            )
+          ])
+        ])
+      : _vm._e(),
+    _c("br")
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
+    return _c("thead", { staticClass: "thead-dark" }, [
       _c("tr", [
-        _c("th", [_vm._v("Nome")]),
+        _c("th", [_vm._v("Name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Ações")])
+        _c("th", [_vm._v("Actions")]),
+        _vm._v(" "),
+        _c("th")
       ])
     ])
   }
@@ -55317,8 +55349,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

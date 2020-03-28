@@ -34,14 +34,14 @@
                             <td v-else>{{ verificarImage(instance.image.id) }}</td>
                             
                             <td>
-                                <div v-for="ip in instance.addresses.private" :key="ip">
-                                    {{ip.addr}}
+                                <div v-for="privateIP in instance.addresses.private" :key="privateIP">
+                                    {{privateIP.addr}}
                                 </div>
-                                <div v-for="ip in instance.addresses.shared" :key="ip">
-                                    {{ip.addr}}
+                                <div v-for="sharedIP in instance.addresses.shared" :key="sharedIP">
+                                    {{sharedIP.addr}}
                                 </div>
-                                <div v-for="ip in instance.addresses.public" :key="ip">
-                                    {{ip.addr}}
+                                <div v-for="publicIP in instance.addresses.public" :key="publicIP">
+                                    {{publicIP.addr}}
                                 </div>
                             </td>
 
@@ -140,21 +140,22 @@
                         'X-Auth-Token': this.$store.state.projectScopedToken
                     },
                 }).then(response => {
-                    for(let i=0; i<response.data.images.length; i++){
+                    //for(let i=0; i<response.data.images.length; i++){
                         this.imagesDetails.push(response.data.images)
-                    }
-                    console.log(this.imagesDetails)
+                    //}
+                    //console.log(this.imagesDetails)
                 });
             },
             verificarImage: function(imageAVerificar){
-                for(let i=0; i < this.imagesDetails.length; i++){
+                for(let i=0; i < this.imagesDetails[0].length; i++){
                     /*
+                    console.log(i)
                     console.log("Imagem a verificar" + imageAVerificar)
-                    console.log(this.imagesDetails[i][0].id)
+                    console.log(this.imagesDetails[0][i].id)
                     */
-                    if(this.imagesDetails[i][0].id == imageAVerificar){
+                    if(this.imagesDetails[0][i].id == imageAVerificar){
                         //console.log(this.imagesDetails[i][0].name)
-                        return this.imagesDetails[i][0].name
+                        return this.imagesDetails[0][i].name
                     }
                 }
             },

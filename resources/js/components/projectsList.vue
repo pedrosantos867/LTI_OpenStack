@@ -4,42 +4,45 @@
         <br>
         <h5>Escolha um dos projetos a baixo</h5>
         <br>
+    
+        <div v-if="projectList.projects.length">
+                <h5>Showing {{ projectList.projects.length }} items</h5>
+        </div>
 
-<<<<<<< HEAD
-  <!--       <ul>
-            <li v-for="project in projectList.projects" :key="project.name">
-                <button v-on:click= changeProject(project)>{{ project.name }}</button>
-            </li>
-        </ul> -->
-          <div>
-	<table class="table table-striped">
-	    <thead>
-	        <tr>
-                
-	            <th>Nome</th>
-                <th>Ações</th>
-                
-	        </tr>
-	    </thead>
-	    <tbody>
-	        <tr v-for="project in projectList.projects" :key="project.name">
-                <td>{{ project.name }}  </td>
-                <td>
-                <button type="button" v-on:click= changeProject(project) class="btn btn-primary">Edit Project</button>
-                <button type="button" class="btn btn-danger">Delete Project</button>
-                </td>
+        
+        <div v-if=projectList.projects.length>
+            <div>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="project in projectList.projects" :key="project">
+                            <td>
+                                <button type="button" class="btn btn-secondary btn-lg btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" v-on:click=changeProject(project)>{{ project.name }}</button>
+                            </td>
+                            <td> 
+                                <button type="button" class="btn btn-lg btn-warning " v-on:click="updateProject(project.id)">Update</button>
+                                &nbsp;
+                                <button type="button" class="btn btn-lg btn-danger " v-on:click="deleteProject(project.id)">Delete</button>
+                            </td>
+                        </tr>            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div v-else>
+                <h5>Não existem projetos</h5>
+        </div>
 
-	        </tr>
+        <div v-if="projectList.projects.length">
+            <h5>Showing {{ projectList.projects.length }} items</h5>
+        </div><br>
 
-	    </tbody>
-	</table>
-      </div>
-=======
-        <dir v-for="project in projectList.projects" :key="project.name">
-            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" v-on:click=changeProject(project)>{{ project.name }}</button>
-        </dir>
-
->>>>>>> f7c9715bf2f7519217603131d66b7039d1482676
     </div>
 </template>
 <script>
@@ -59,7 +62,6 @@
                     },
                 }).then(response => {
                     this.projectList = response.data
-                    //console.log(this.projectList);
                 });
             },
             changeProject: function(project) {
@@ -98,11 +100,12 @@
                     this.$router.push("/projectDetails");
                 });
             },
-
             deleteProject: function(project){
-
-            }
-            
+                console.log(project)
+            },
+            updateProject: function(project){
+                console.log(project)
+            },
         },
         mounted() {
             this.getProjects()
