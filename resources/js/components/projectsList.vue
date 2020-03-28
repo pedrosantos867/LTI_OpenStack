@@ -5,33 +5,11 @@
         <h5>Escolha um dos projetos a baixo</h5>
         <br>
 
-        <ul>
-            <li v-for="project in projectList.projects" :key="project.name">
-                <button v-on:click=changeProject(project)>{{ project.name }}</button>
-            </li>
-        </ul>
+        <dir v-for="project in projectList.projects" :key="project.name">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" v-on:click=changeProject(project)>{{ project.name }}</button>
+        </dir>
 
-        
-<template>
-	<table class="table table-striped">
-        <h2></h2>
-	    <thead>
-	        <tr>
-	            <th>{{ title }}</th>
-	        </tr>
-	    </thead>
-	    <tbody>
-	        <tr v-for="project in projectList.projects" :key="project.name">
-                <td>{{ project.name }}  </td>
-
-            <button type="button" class="btn btn-primary">Edit Project</button>
-              
-            <button type="button" class="btn btn-danger">Delete Project</button>
-
-	        </tr>
-
-	    </tbody>
-	</table>
+    </div>
 </template>
 <script>
     export default {

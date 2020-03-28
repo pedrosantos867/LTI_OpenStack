@@ -2247,12 +2247,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       title: "Lista de instancias do projeto " + this.$store.state.currentProjectName,
       instancesList: [],
-      instancesDetails: []
+      instancesDetails: [],
+      imagesDetails: [],
+      flavorsDetails: []
     };
   },
   methods: {
@@ -2268,6 +2304,10 @@ __webpack_require__.r(__webpack_exports__);
         _this.instancesList = response.data.servers;
 
         _this.getAllInstancesDetails();
+
+        _this.getImagesDetails();
+
+        _this.getFlavorsDetails();
       });
     },
     goBack: function goBack() {
@@ -2301,6 +2341,53 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       console.log(this.instancesDetails);
+    },
+    getImagesDetails: function getImagesDetails() {
+      var _this3 = this;
+
+      axios.get('http://134.122.49.176/compute/v2.1/images', {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        for (var i = 0; i < response.data.images.length; i++) {
+          _this3.imagesDetails.push(response.data.images);
+        }
+
+        console.log(_this3.imagesDetails);
+      });
+    },
+    verificarImage: function verificarImage(imageAVerificar) {
+      for (var i = 0; i < this.imagesDetails.length; i++) {
+        /*
+        console.log("Imagem a verificar" + imageAVerificar)
+        console.log(this.imagesDetails[i][0].id)
+        */
+        if (this.imagesDetails[i][0].id == imageAVerificar) {
+          //console.log(this.imagesDetails[i][0].name)
+          return this.imagesDetails[i][0].name;
+        }
+      }
+    },
+    getFlavorsDetails: function getFlavorsDetails() {
+      var _this4 = this;
+
+      axios.get('http://134.122.49.176/compute/v2.1/flavors', {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this4.flavorsDetails = response.data.flavors;
+      });
+    },
+    verificarFlavor: function verificarFlavor(flavorAverificar) {
+      for (var i = 0; i < this.flavorsDetails.length; i++) {
+        if (this.flavorsDetails[i].id == flavorAverificar) {
+          return this.flavorsDetails[i].name;
+        }
+      }
     }
   },
   mounted: function mounted() {
@@ -2319,8 +2406,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -38046,6 +38131,17 @@ var render = function() {
     ),
     _c("br"),
     _vm._v(" "),
+    _c("br"),
+    _c("br"),
+    _vm._v(" "),
+    _vm.instancesList.length
+      ? _c("div", [
+          _c("h5", [
+            _vm._v("Showing " + _vm._s(_vm.instancesList.length) + " items")
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _vm.instancesList.length
       ? _c("div", [
           _c("div", [
@@ -38058,23 +38154,73 @@ var render = function() {
                   return _c("tr", { key: instance }, [
                     _c("td", [_vm._v(_vm._s(instance.name))]),
                     _vm._v(" "),
-                    instance.image == null
+                    instance.image.id == null
                       ? _c("td", [_vm._v("Boot from volume")])
-                      : _c("td", [_vm._v(_vm._s(instance.image))]),
+                      : _c("td", [
+                          _vm._v(_vm._s(_vm.verificarImage(instance.image.id)))
+                        ]),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      [
+                        _vm._l(instance.addresses.private, function(ip) {
+                          return _c("div", { key: ip }, [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(ip.addr) +
+                                "\n                            "
+                            )
+                          ])
+                        }),
+                        _vm._v(" "),
+                        _vm._l(instance.addresses.shared, function(ip) {
+                          return _c("div", { key: ip }, [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(ip.addr) +
+                                "\n                            "
+                            )
+                          ])
+                        }),
+                        _vm._v(" "),
+                        _vm._l(instance.addresses.public, function(ip) {
+                          return _c("div", { key: ip }, [
+                            _vm._v(
+                              "\n                                " +
+                                _vm._s(ip.addr) +
+                                "\n                            "
+                            )
+                          ])
+                        })
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
                     _c("td", [
-                      _vm._v(_vm._s(instance.addresses.shared[0].addr))
+                      _vm._v(_vm._s(_vm.verificarFlavor(instance.flavor.id)))
                     ]),
-                    _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(instance.flavor.id))]),
                     _vm._v(" "),
                     instance.key_name == null
                       ? _c("td", [_vm._v("-")])
                       : _c("td", [_vm._v(_vm._s(instance.key_name))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(instance.status))]),
+                    _c("td", [_vm._v(_vm._s(instance["OS-EXT-STS:vm_state"]))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(instance.host_status))]),
+                    instance["OS-EXT-STS:power_state"] == null
+                      ? _c("td", [_vm._v("-")])
+                      : instance["OS-EXT-STS:power_state"] == 0
+                      ? _c("td", [_vm._v(" NOSTATE ")])
+                      : instance["OS-EXT-STS:power_state"] == 1
+                      ? _c("td", [_vm._v(" RUNNING ")])
+                      : instance["OS-EXT-STS:power_state"] == 3
+                      ? _c("td", [_vm._v(" PAUSED ")])
+                      : instance["OS-EXT-STS:power_state"] == 4
+                      ? _c("td", [_vm._v(" SHUTDOWN ")])
+                      : instance["OS-EXT-STS:power_state"] == 6
+                      ? _c("td", [_vm._v(" CRASHED ")])
+                      : instance["OS-EXT-STS:power_state"] == 7
+                      ? _c("td", [_vm._v(" SUSPENDED ")])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("td", [
                       _c(
@@ -38114,6 +38260,15 @@ var render = function() {
         ])
       : _c("div", [_c("h5", [_vm._v("Não existem instâncias neste projeto")])]),
     _vm._v(" "),
+    _vm.instancesList.length
+      ? _c("div", [
+          _c("h5", [
+            _vm._v("Showing " + _vm._s(_vm.instancesList.length) + " items")
+          ])
+        ])
+      : _vm._e(),
+    _c("br"),
+    _vm._v(" "),
     _c(
       "button",
       {
@@ -38138,7 +38293,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Image name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("IP Adress")]),
+        _c("th", [_vm._v("IP Adressess (Private, public, shared)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Flavor")]),
         _vm._v(" "),
@@ -38174,22 +38329,29 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h2", [_vm._v(_vm._s(_vm.title))]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c("h5", [_vm._v("Escolha um dos projetos a baixo")]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _c(
-      "ul",
+  return _c(
+    "div",
+    [
+      _c("h2", [_vm._v(_vm._s(_vm.title))]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("h5", [_vm._v("Escolha um dos projetos a baixo")]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
       _vm._l(_vm.projectList.projects, function(project) {
-        return _c("li", { key: project.name }, [
+        return _c("dir", { key: project.name }, [
           _c(
             "button",
             {
+              staticClass: "btn btn-primary btn-lg btn-block",
+              attrs: {
+                type: "button",
+                "data-toggle": "button",
+                "aria-pressed": "false",
+                autocomplete: "off"
+              },
               on: {
                 click: function($event) {
                   return _vm.changeProject(project)
@@ -38199,10 +38361,10 @@ var render = function() {
             [_vm._v(_vm._s(project.name))]
           )
         ])
-      }),
-      0
-    )
-  ])
+      })
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
