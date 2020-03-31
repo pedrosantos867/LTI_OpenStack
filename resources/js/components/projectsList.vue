@@ -100,10 +100,30 @@
                     this.$router.push("/projectDetails");
                 });
             },
-            deleteProject: function(project){
-                console.log(project)
+            deleteProject: function(projectID){
+                console.log("A mostrar detalhes do projeto " + projectID)
+                axios.get(this.$store.state.url + '/identity/v3/projects/' + projectID,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.token
+                    },
+                }).then(response => {
+                    console.log(response)
+                });
+                /*
+                console.log("A apagar o projeto com o ID: " + projectID)
+                axios.delete(this.$store.state.url + '/identity/v3/projects/' + projectID,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.token
+                    },
+                }).then(response => {
+                    console.log(response)
+                    this.getProjects()
+                });
+                */
             },
-            updateProject: function(project){
+            updateProject: function(projectID){
                 console.log(project)
             },
         },
