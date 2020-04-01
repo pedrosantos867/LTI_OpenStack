@@ -61,8 +61,8 @@
                             <td v-else-if="instance['OS-EXT-STS:power_state'] == 7"> SUSPENDED </td>
                             
                             <td>                    
-                                <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance.id)">Editar</button>
-                                <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance.id)">Remover</button>
+                                <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance)">Editar</button>
+                                <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance)">Remover</button>
                             </td>
                         </tr>            
                     </tbody>
@@ -108,11 +108,24 @@
             goBack: function() {
                 this.$router.push("/projectsList");
             },
-            editInstance: function() {
-                console.log("Função: editInstance");
+            editInstance: function(instance) {
+                console.log("ID: " + instance.id + "\n" + "Nome: " + instance.name);
             },
-            removeInstance: function() {
+            removeInstance: function(instance) {
                 console.log("Função: removeInstance");
+                axios.delete(this.$store.state.url + '/identity/v3/servers/' + instance.id, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.projectScopedToken
+                    },
+                }).then(response => {
+                    if(response.status == 204){
+                        Vue.$toast.open('Instância ' + instance.name + " apagado com sucesso!");
+                        this.instancesList = [];
+                        this.getInstances();
+                    }
+                    console.log(response)
+                });
             },
             createInstance: function() {
                 this.$router.push("/createInstance");
