@@ -22,6 +22,10 @@ export default new Vuex.Store({
             sessionStorage.setItem('token', token);
             axios.defaults.headers.common.Authorization = token;
         },
+        setProjectScopedToken: (state, token) => {
+            state.projectScopedToken = token;
+            sessionStorage.setItem('projectScopedToken', token);
+        },
         clearToken: (state) => {
             state.token = "";
             sessionStorage.removeItem('token');

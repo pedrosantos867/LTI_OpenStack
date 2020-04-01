@@ -2457,7 +2457,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       title: "Lista de Projetos",
-      projectList: []
+      projectList: [],
+      tokenProjeto: ""
     };
   },
   methods: {
@@ -2502,33 +2503,53 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         //Token scoped para o projectID
+        console.log(_this2.$store.state.currentProjectID);
         _this2.$store.state.projectScopedToken = response.headers["x-subject-token"];
 
         _this2.$router.push("/projectDetails");
       });
     },
-    deleteProject: function deleteProject(projectID) {
-      console.log("A mostrar detalhes do projeto " + projectID);
-      axios.get(this.$store.state.url + '/identity/v3/projects/' + projectID, {
+    deleteProject: function deleteProject(project) {
+      var _this3 = this;
+
+      console.log("A pedir token scoped para o projeto: " + project.id + " para depois poder apagar o projeto");
+      this.$store.state.currentProjectID = project.id;
+      this.$store.state.currentProjectName = project.name;
+      var payload = {
+        "auth": {
+          "identity": {
+            "methods": ["password"],
+            "password": {
+              "user": {
+                "id": this.$store.state.userID,
+                "password": this.$store.state.userPassword
+              }
+            }
+          },
+          "scope": {
+            "project": {
+              "id": project.id
+            }
+          }
+        }
+      };
+      axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.token
+          'Content-Type': 'application/json'
         }
       }).then(function (response) {
-        console.log(response);
-      });
-      /*
-      console.log("A apagar o projeto com o ID: " + projectID)
-      axios.delete(this.$store.state.url + '/identity/v3/projects/' + projectID,{
+        _this3.tokenProjeto = response.headers["x-subject-token"];
+        console.log(_this3.tokenProjeto);
+        axios["delete"](_this3.$store.state.url + '/identity/v3/projects/' + project.id, {
           headers: {
-              'Content-Type': 'application/json',
-              'X-Auth-Token': this.$store.state.token
-          },
-      }).then(response => {
-          console.log(response)
-          this.getProjects()
+            'Content-Type': 'application/json',
+            'X-Auth-Token': _this3.tokenProjeto
+          }
+        }).then(function (response) {
+          console.log("this.tokenProjeto2: " + _this3.tokenProjeto);
+          console.log(response);
+        });
       });
-      */
     },
     updateProject: function updateProject(projectID) {
       console.log(project);
@@ -38447,7 +38468,7 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              return _vm.updateProject(project.id)
+                              return _vm.updateProject(project)
                             }
                           }
                         },
@@ -38463,7 +38484,7 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              return _vm.deleteProject(project.id)
+                              return _vm.deleteProject(project)
                             }
                           }
                         },
@@ -55308,6 +55329,10 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       state.token = token;
       sessionStorage.setItem('token', token);
       axios.defaults.headers.common.Authorization = token;
+    },
+    setProjectScopedToken: function setProjectScopedToken(state, token) {
+      state.projectScopedToken = token;
+      sessionStorage.setItem('projectScopedToken', token);
     },
     clearToken: function clearToken(state) {
       state.token = "";

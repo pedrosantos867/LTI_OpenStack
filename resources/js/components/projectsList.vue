@@ -26,9 +26,9 @@
                                 <button type="button" class="btn btn-secondary btn-lg btn-block" data-toggle="button" aria-pressed="false" autocomplete="off" v-on:click=changeProject(project)>{{ project.name }}</button>
                             </td>
                             <td> 
-                                <button type="button" class="btn btn-lg btn-warning " v-on:click="updateProject(project.id)">Update</button>
+                                <button type="button" class="btn btn-lg btn-warning " v-on:click="updateProject(project)">Update</button>
                                 &nbsp;
-                                <button type="button" class="btn btn-lg btn-danger " v-on:click="deleteProject(project.id)">Delete</button>
+                                <button type="button" class="btn btn-lg btn-danger " v-on:click="deleteProject(project)">Delete</button>
                             </td>
                         </tr>            
                     </tbody>
@@ -50,7 +50,8 @@
         data: function() {
             return {
                 title: "Lista de Projetos",
-                projectList: []
+                projectList: [],
+                tokenProjeto: ""
             };
         },
         methods: {
@@ -89,39 +90,62 @@
                         }
                     }
                 }
-
                 axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 }).then(response => {
                     //Token scoped para o projectID
-                    this.$store.state.projectScopedToken =response.headers["x-subject-token"]
+                    console.log(this.$store.state.currentProjectID)
+                    this.$store.state.projectScopedToken = response.headers["x-subject-token"]
                     this.$router.push("/projectDetails");
                 });
             },
-            deleteProject: function(projectID){
-                console.log("A mostrar detalhes do projeto " + projectID)
-                axios.get(this.$store.state.url + '/identity/v3/projects/' + projectID,{
+            deleteProject: function(project){
+                console.log("A pedir token scoped para o projeto: " + project.id + " para depois poder apagar o projeto")
+                
+                this.$store.state.currentProjectID = project.id;
+                this.$store.state.currentProjectName = project.name;
+
+                let payload = 
+                {
+                    "auth": {
+                        "identity": {
+                            "methods": [
+                                "password"
+                            ],
+                            "password": {
+                                "user": {
+                                    "id": this.$store.state.userID,
+                                    "password": this.$store.state.userPassword
+                                }
+                            }
+                        },
+                        "scope": {
+                            "project": {
+                                "id": project.id
+                            }
+                        }
+                    }
+                }
+                
+                axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Auth-Token': this.$store.state.token
                     },
                 }).then(response => {
-                    console.log(response)
+                    this.tokenProjeto = response.headers["x-subject-token"]
+                    console.log(this.tokenProjeto)
+                    axios.delete(this.$store.state.url + '/identity/v3/projects/' + project.id, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Auth-Token': this.tokenProjeto
+                        },
+                    }).then(response => {
+                        console.log("this.tokenProjeto2: " + this.tokenProjeto )
+                        console.log(response)
+                    });
                 });
-                /*
-                console.log("A apagar o projeto com o ID: " + projectID)
-                axios.delete(this.$store.state.url + '/identity/v3/projects/' + projectID,{
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Auth-Token': this.$store.state.token
-                    },
-                }).then(response => {
-                    console.log(response)
-                    this.getProjects()
-                });
-                */
             },
             updateProject: function(projectID){
                 console.log(project)
