@@ -128,6 +128,8 @@
                         Vue.$toast.open('Instância ' + instance.name + " apagado com sucesso!");
                         this.instancesList = [];
                         this.getInstances();
+                    }else{
+                        Vue.$toast.open('Houve um erro ao apagar a instância ' + instance.name + "!");
                     }
                     console.log(response)
                 });
