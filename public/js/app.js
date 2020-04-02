@@ -2281,6 +2281,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2313,14 +2314,16 @@ __webpack_require__.r(__webpack_exports__);
     goBack: function goBack() {
       this.$router.push("/projectsList");
     },
-    editInstance: function editInstance(instance) {
-      console.log("ID: " + instance.id + "\n" + "Nome: " + instance.name);
+    editInstance: function editInstance(instance) {},
+    getInstanceData: function getInstanceData(instance) {
+      console.log(instance);
     },
     removeInstance: function removeInstance(instance) {
       var _this2 = this;
 
-      console.log("Função: removeInstance");
-      axios["delete"](this.$store.state.url + '/identity/v3/servers/' + instance.id, {
+      console.log("Função: removeInstance"); //if(instance)
+
+      axios["delete"](this.$store.state.url + '/compute/v2.1/servers/' + instance.id, {
         headers: {
           'Content-Type': 'application/json',
           'X-Auth-Token': this.$store.state.projectScopedToken
@@ -38951,6 +38954,20 @@ var render = function() {
                           }
                         },
                         [_vm._v("Editar")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.getInstanceData(instance)
+                            }
+                          }
+                        },
+                        [_vm._v("Get data")]
                       ),
                       _vm._v(" "),
                       _c(

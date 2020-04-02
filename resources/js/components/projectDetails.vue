@@ -62,6 +62,7 @@
                             
                             <td>                    
                                 <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance)">Editar</button>
+                                <button type="button" class="btn btn-sm btn-primary" v-on:click="getInstanceData(instance)">Get data</button>
                                 <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance)">Remover</button>
                             </td>
                         </tr>            
@@ -109,11 +110,15 @@
                 this.$router.push("/projectsList");
             },
             editInstance: function(instance) {
-                console.log("ID: " + instance.id + "\n" + "Nome: " + instance.name);
+            },
+            getInstanceData: function(instance){
+                console.log(instance);
             },
             removeInstance: function(instance) {
                 console.log("Função: removeInstance");
-                axios.delete(this.$store.state.url + '/identity/v3/servers/' + instance.id, {
+                //if(instance)
+
+                axios.delete(this.$store.state.url + '/compute/v2.1/servers/' + instance.id, {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Auth-Token': this.$store.state.projectScopedToken
