@@ -62,6 +62,7 @@
                             
                             <td>                    
                                 <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance)">Editar</button>
+                                <button type="button" class="btn btn-sm btn-primary" v-on:click="getVolumes()">Get volumes</button>
                                 <button type="button" class="btn btn-sm btn-primary" v-on:click="getInstanceData(instance)">Get data</button>
                                 <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance)">Remover</button>
                             </td>
@@ -113,6 +114,17 @@
             },
             getInstanceData: function(instance){
                 console.log(instance);
+            },
+            getVolumes: function(){
+                console.log(this.$store.state.currentProjectID)
+                axios.get(this.$store.state.url + '/volume/v3/'+ this.$store.state.currentProjectID + '/volumes',{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.projectScopedToken
+                    },
+                }).then(response => {
+                    console.log(response.data)
+                });
             },
             removeInstance: function(instance) {
                 console.log("Função: removeInstance");

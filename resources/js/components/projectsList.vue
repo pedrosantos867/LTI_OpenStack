@@ -66,8 +66,8 @@
                 });
             },
             changeProject: function(project) {
-                this.$store.state.currentProjectID = project.id;
-                this.$store.state.currentProjectName = project.name;
+                this.$store.commit('setCurrentProjectID', project.id)
+                this.$store.commit('setCurrentProjectName', project.name)
 
                 let payload = 
                 {
@@ -96,13 +96,11 @@
                     },
                 }).then(response => {
                     //Token scoped para o projectID
-                    this.$store.state.projectScopedToken = response.headers["x-subject-token"]
+                    this.$store.commit('setProjectScopedToken', response.headers["x-subject-token"])
                     this.$router.push("/projectDetails");
                 });
             },
             deleteProject: function(project){                
-                this.$store.state.currentProjectID = project.id;
-                this.$store.state.currentProjectName = project.name;
 
                 let payload = 
                 {
@@ -153,7 +151,6 @@
         },
         mounted() {
             this.getProjects()
-        },
-
+        }
     }
 </script>

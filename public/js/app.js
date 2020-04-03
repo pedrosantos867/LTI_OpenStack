@@ -2021,9 +2021,147 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      instanceData: {
+        name: "",
+        flavorID: null,
+        volume: null,
+        image: null,
+        description: null,
+        volumeSource: 0
+      },
+      flavors: [],
+      volumes: [],
+      images: [],
+      optionsVolumeSource: [{
+        text: "Image",
+        value: 2
+      }, {
+        text: "Volume",
+        value: 3
+      }],
+      optionsPayment: [{
+        text: "Bank Transfer",
+        value: "bt"
+      }, {
+        text: "MB Payment",
+        value: "mb"
+      }],
+      error: null
+    };
+  },
+  methods: {
+    getFlavors: function getFlavors() {
+      var _this = this;
+
+      console.log(this.$store.state.projectScopedToken);
+      axios.get(this.$store.state.url + '/compute/v2.1/flavors', {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this.flavors = response.data.flavors; //console.log(this.flavors)
+      });
+    },
+    getVolumes: function getVolumes() {
+      var _this2 = this;
+
+      axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this2.volumes = response.data.volumes; //console.log(this.volumes)
+      });
+    },
+    getImages: function getImages() {
+      var _this3 = this;
+
+      axios.get(this.$store.state.url + '/compute/v2.1/images', {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this3.images = response.data.images; //console.log(this.images)
+      });
+    },
+    createInstance: function createInstance() {
+      var _this4 = this;
+
+      var payload = {
+        "server": {
+          "name": this.instanceData.name,
+          "imageRef": this.instanceData.image,
+          "flavorRef": this.instanceData.flavorID,
+          "description": this.instanceData.description,
+          "networks": [{
+            "uuid": "1147a077-f1e5-479a-bb81-e56a49438158"
+          }]
+        }
+      }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
+
+      console.log(payload);
+      axios.post(this.$store.state.url + '/compute/v2.1/servers', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        if (response.status == 202) {
+          Vue.$toast.open('Instância ' + _this4.instanceData.name + " criada com sucesso!");
+
+          _this4.goBack();
+        }
+
+        console.log(response);
+        /*
+        if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+        }
+        */
+      });
+    },
+    goBack: function goBack() {
+      this.$router.push("/projectDetails");
+    }
+    /*
+    getCategories: function() {
+      axios.get("api/categories/e").then(response => {
+        this.categories = response.data.data;
+      });
+    },
+    createMovement: function() {
+      //   console.log(this.movementData);
+      this.error = null;
+      axios
+        .post("api/movement/create", this.movementData)
+        .then(response => {
+          console.log(response);
+          this.$router.push("/wallet");
+          this.$socket.emit("userUpdated", this.movementData.email);
+        })
+        .catch(err => {
+          this.error = err.response.data.message;
+          console.log(err.response.data);
+        });
+    }
+    */
+
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.getFlavors();
+    this.getVolumes();
+    this.getImages();
   }
 });
 
@@ -2131,8 +2269,9 @@ __webpack_require__.r(__webpack_exports__);
 
           _this.$store.commit("setUser", _this.userData.username);
 
-          _this.$store.state.userID = response.data.token.user.id;
-          _this.$store.state.userPassword = _this.userData.password;
+          _this.$store.commit("setUserID", response.data.token.user.id);
+
+          _this.$store.commit("setUserPassword", _this.userData.password);
 
           _this.$router.push("/projectsList");
         } //console.log(this.userData.username);
@@ -2282,6 +2421,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2318,6 +2458,17 @@ __webpack_require__.r(__webpack_exports__);
     getInstanceData: function getInstanceData(instance) {
       console.log(instance);
     },
+    getVolumes: function getVolumes() {
+      console.log(this.$store.state.currentProjectID);
+      axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        console.log(response.data);
+      });
+    },
     removeInstance: function removeInstance(instance) {
       var _this2 = this;
 
@@ -2334,6 +2485,8 @@ __webpack_require__.r(__webpack_exports__);
           _this2.instancesList = [];
 
           _this2.getInstances();
+        } else {
+          Vue.$toast.open('Houve um erro ao apagar a instância ' + instance.name + "!");
         }
 
         console.log(response);
@@ -2497,8 +2650,8 @@ __webpack_require__.r(__webpack_exports__);
     changeProject: function changeProject(project) {
       var _this2 = this;
 
-      this.$store.state.currentProjectID = project.id;
-      this.$store.state.currentProjectName = project.name;
+      this.$store.commit('setCurrentProjectID', project.id);
+      this.$store.commit('setCurrentProjectName', project.name);
       var payload = {
         "auth": {
           "identity": {
@@ -2523,7 +2676,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         //Token scoped para o projectID
-        _this2.$store.state.projectScopedToken = response.headers["x-subject-token"];
+        _this2.$store.commit('setProjectScopedToken', response.headers["x-subject-token"]);
 
         _this2.$router.push("/projectDetails");
       });
@@ -2531,8 +2684,6 @@ __webpack_require__.r(__webpack_exports__);
     deleteProject: function deleteProject(project) {
       var _this3 = this;
 
-      this.$store.state.currentProjectID = project.id;
-      this.$store.state.currentProjectName = project.name;
       var payload = {
         "auth": {
           "identity": {
@@ -38617,9 +38768,307 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.instanceData.name,
+            expression: "instanceData.name"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text", name: "name", id: "name" },
+        domProps: { value: _vm.instanceData.name },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.instanceData, "name", $event.target.value)
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "description" } }, [_vm._v("Description")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.instanceData.description,
+            expression: "instanceData.description"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text", name: "description", id: "description" },
+        domProps: { value: _vm.instanceData.description },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.instanceData, "description", $event.target.value)
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "volumeSource" } }, [
+        _vm._v("Volume source")
+      ]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.instanceData.volumeSource,
+              expression: "instanceData.volumeSource"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { id: "volumeSource", name: "volumeSource" },
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.instanceData,
+                "volumeSource",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
+          }
+        },
+        _vm._l(_vm.optionsVolumeSource, function(option) {
+          return _c(
+            "option",
+            { key: option.value, domProps: { value: option.value } },
+            [_vm._v(_vm._s(option.text))]
+          )
+        }),
+        0
+      )
+    ]),
+    _vm._v(" "),
+    _vm.instanceData.volumeSource == 2
+      ? _c("div", [
+          _c("div", [
+            _c("label", { attrs: { for: "image" } }, [_vm._v("Image")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.instanceData.image,
+                    expression: "instanceData.image"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { id: "image", name: "image" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.instanceData,
+                      "image",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.images, function(option) {
+                return _c(
+                  "option",
+                  { key: option.id, domProps: { value: option.id } },
+                  [_vm._v(_vm._s(option.name))]
+                )
+              }),
+              0
+            )
+          ])
+        ])
+      : _vm.instanceData.volumeSource == 3
+      ? _c("div", [
+          _c("div", [
+            _c("label", { attrs: { for: "volume" } }, [_vm._v("Volume")]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.instanceData.volume,
+                    expression: "instanceData.volume"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { id: "volume", name: "volume" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.instanceData,
+                      "volume",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              _vm._l(_vm.volumes, function(option) {
+                return _c(
+                  "option",
+                  { key: option.id, domProps: { value: option.id } },
+                  [
+                    _vm._v(
+                      _vm._s("ID: " + option.id + "      Name: " + option.name)
+                    )
+                  ]
+                )
+              }),
+              0
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "flavor" } }, [_vm._v("Flavor")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.instanceData.flavorID,
+              expression: "instanceData.flavorID"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { id: "flavor", name: "flavor" },
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.$set(
+                _vm.instanceData,
+                "flavorID",
+                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+              )
+            }
+          }
+        },
+        _vm._l(_vm.flavors, function(option) {
+          return _c(
+            "option",
+            { key: option.id, domProps: { value: option.id } },
+            [_vm._v(_vm._s(option.name))]
+          )
+        }),
+        0
+      )
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm.error
+      ? _c(
+          "div",
+          { staticClass: "alert alert-danger", attrs: { role: "alert" } },
+          [_vm._v(_vm._s(_vm.error))]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.createInstance($event)
+            }
+          }
+        },
+        [_vm._v("Create")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              return _vm.goBack()
+            }
+          }
+        },
+        [_vm._v("Cancel")]
+      )
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "jumbotron" }, [
+      _c("h1", [_vm._v("Create Instance")])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -38954,6 +39403,20 @@ var render = function() {
                           }
                         },
                         [_vm._v("Editar")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-sm btn-primary",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              return _vm.getVolumes()
+                            }
+                          }
+                        },
+                        [_vm._v("Get volumes")]
                       ),
                       _vm._v(" "),
                       _c(
@@ -56008,6 +56471,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
@@ -56022,7 +56487,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     projectScopedToken: "",
     userPassword: null
   },
-  mutations: {
+  mutations: _defineProperty({
     //synch
     //guardar token no Vuex e na session e adicionar o token aos headers do pedidos à API
     setToken: function setToken(state, token) {
@@ -56068,8 +56533,22 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       if (user) {
         state.user = JSON.parse(user);
       }
+    },
+    setCurrentProjectID: function setCurrentProjectID(state, id) {
+      state.currentProjectID = id;
+    },
+    setCurrentProjectName: function setCurrentProjectName(state, name) {
+      state.currentProjectName = name;
+    },
+    setUserID: function setUserID(state, id) {
+      state.userID = id;
+    },
+    setUserPassword: function setUserPassword(state, password) {
+      state.userPassword = password;
     }
-  },
+  }, "setProjectScopedToken", function setProjectScopedToken(state, token) {
+    state.projectScopedToken = token;
+  }),
   actions: {//async
   }
 }));
