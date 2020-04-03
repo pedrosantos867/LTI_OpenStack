@@ -58,8 +58,23 @@ export default new Vuex.Store({
             if (user) {
                 state.user = JSON.parse(user);
             }
-        }
-
+        },
+        setCurrentProjectID(state, id){
+            state.currentProjectID = id
+        },
+        setCurrentProjectName(state, name){
+            state.currentProjectName = name
+        },
+        setUserID(state, id){
+            state.userID = id
+        },
+        setUserPassword(state, password){
+            state.userPassword = password
+        },
+        setProjectScopedToken(state, token){
+            state.projectScopedToken = token
+        },
+        
     },
     actions: {//async
 

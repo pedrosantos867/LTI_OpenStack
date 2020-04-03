@@ -66,8 +66,8 @@
                 });
             },
             changeProject: function(project) {
-                this.$store.state.currentProjectID = project.id;
-                this.$store.state.currentProjectName = project.name;
+                this.$store.commit('setCurrentProjectID', project.id)
+                this.$store.commit('setCurrentProjectName', project.name)
 
                 let payload = 
                 {
@@ -96,16 +96,11 @@
                     },
                 }).then(response => {
                     //Token scoped para o projectID
-                    console.log(this.$store.state.currentProjectID)
-                    this.$store.state.projectScopedToken = response.headers["x-subject-token"]
+                    this.$store.commit('setProjectScopedToken', response.headers["x-subject-token"])
                     this.$router.push("/projectDetails");
                 });
             },
-            deleteProject: function(project){
-                console.log("A pedir token scoped para o projeto: " + project.id + " para depois poder apagar o projeto")
-                
-                this.$store.state.currentProjectID = project.id;
-                this.$store.state.currentProjectName = project.name;
+            deleteProject: function(project){                
 
                 let payload = 
                 {
@@ -135,25 +130,27 @@
                     },
                 }).then(response => {
                     this.tokenProjeto = response.headers["x-subject-token"]
-                    console.log(this.tokenProjeto)
                     axios.delete(this.$store.state.url + '/identity/v3/projects/' + project.id, {
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Auth-Token': this.tokenProjeto
                         },
                     }).then(response => {
-                        console.log("this.tokenProjeto2: " + this.tokenProjeto )
+                        if(response.status == 204){
+                            Vue.$toast.open('Projeto ' + project.name + " apagado com sucesso!");
+                            this.projectList = [];
+                            this.getProjects();
+                        }
                         console.log(response)
                     });
                 });
             },
             updateProject: function(projectID){
-                console.log(project)
+                Vue.$toast.open("Notificação teste");
             },
         },
         mounted() {
             this.getProjects()
-        },
-
+        }
     }
 </script>

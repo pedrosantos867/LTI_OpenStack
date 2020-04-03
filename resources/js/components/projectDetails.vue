@@ -61,8 +61,10 @@
                             <td v-else-if="instance['OS-EXT-STS:power_state'] == 7"> SUSPENDED </td>
                             
                             <td>                    
-                                <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance.id)">Editar</button>
-                                <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance.id)">Remover</button>
+                                <button type="button" class="btn btn-sm btn-primary" v-on:click="editInstance(instance)">Editar</button>
+                                <button type="button" class="btn btn-sm btn-primary" v-on:click="getVolumes()">Get volumes</button>
+                                <button type="button" class="btn btn-sm btn-primary" v-on:click="getInstanceData(instance)">Get data</button>
+                                <button type="button" class="btn btn-sm btn-danger" v-on:click="removeInstance(instance)">Remover</button>
                             </td>
                         </tr>            
                     </tbody>
@@ -108,11 +110,41 @@
             goBack: function() {
                 this.$router.push("/projectsList");
             },
-            editInstance: function() {
-                console.log("Função: editInstance");
+            editInstance: function(instance) {
             },
-            removeInstance: function() {
+            getInstanceData: function(instance){
+                console.log(instance);
+            },
+            getVolumes: function(){
+                console.log(this.$store.state.currentProjectID)
+                axios.get(this.$store.state.url + '/volume/v3/'+ this.$store.state.currentProjectID + '/volumes',{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.projectScopedToken
+                    },
+                }).then(response => {
+                    console.log(response.data)
+                });
+            },
+            removeInstance: function(instance) {
                 console.log("Função: removeInstance");
+                //if(instance)
+
+                axios.delete(this.$store.state.url + '/compute/v2.1/servers/' + instance.id, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Auth-Token': this.$store.state.projectScopedToken
+                    },
+                }).then(response => {
+                    if(response.status == 204){
+                        Vue.$toast.open('Instância ' + instance.name + " apagado com sucesso!");
+                        this.instancesList = [];
+                        this.getInstances();
+                    }else{
+                        Vue.$toast.open('Houve um erro ao apagar a instância ' + instance.name + "!");
+                    }
+                    console.log(response)
+                });
             },
             createInstance: function() {
                 this.$router.push("/createInstance");

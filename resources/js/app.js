@@ -14,12 +14,14 @@ import ProjectsList from './components/projectsList'
 import ProjectDetails from './components/projectDetails'
 import CreateInstance from './components/createInstance'
 
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-default.css';
 
 import ExampleComponent from './components/ExampleComponent'
 
 Vue.use(Vuex)
 Vue.use(VueRouter)
-
+Vue.use(VueToast);
 
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
