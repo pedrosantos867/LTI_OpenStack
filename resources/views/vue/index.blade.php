@@ -17,7 +17,7 @@
             <li class="nav-item">
                 <router-link  class="nav-link" v-if="!this.$store.state.token" to="/login">Login</router-link>
             </li>
-            
+            <router-link  class="nav-link" to="/createVolume" v-if="this.$store.state.token">Criar Volume</router-link>
             <router-link  class="nav-link" to="/projectCreate" v-if="this.$store.state.token">Criar Projeto</router-link>
             <router-link  class="nav-link" to="/projectsList" v-if="this.$store.state.token">Lista de Projetos</router-link>
 

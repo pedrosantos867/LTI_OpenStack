@@ -13,11 +13,10 @@ import Logout from './components/logout'
 import ProjectsList from './components/projectsList'
 import ProjectDetails from './components/projectDetails'
 import CreateInstance from './components/createInstance'
+import CreateVolume from './components/createVolume'
 
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-default.css';
-
-import ExampleComponent from './components/ExampleComponent'
 
 Vue.use(Vuex)
 Vue.use(VueRouter)
@@ -31,7 +30,8 @@ const routes = [
     { path: '/logout', component: Logout },
     { path: '/projectsList', component: ProjectsList },   
     { path: '/projectDetails', component: ProjectDetails },
-    { path: '/createInstance', component: CreateInstance }
+    { path: '/createInstance', component: CreateInstance },
+    { path: '/createVolume', component: CreateVolume }
 ]
 
 const router = new VueRouter({
