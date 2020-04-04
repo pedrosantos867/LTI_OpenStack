@@ -1985,11 +1985,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 //import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1999,7 +1994,7 @@ __webpack_require__.r(__webpack_exports__);
         flavorID: null,
         volume: null,
         image: null,
-        description: null,
+        description: "",
         volumeSource: 0
       },
       flavors: [],
@@ -2027,10 +2022,10 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       console.log(this.$store.state.projectScopedToken);
-      axios.get(this.$store.state.url + '/compute/v2.1/flavors', {
+      axios.get(this.$store.state.url + "/compute/v2.1/flavors", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         _this.flavors = response.data.flavors; //console.log(this.flavors)
@@ -2039,10 +2034,10 @@ __webpack_require__.r(__webpack_exports__);
     getVolumes: function getVolumes() {
       var _this2 = this;
 
-      axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
+      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         _this2.volumes = response.data.volumes; //console.log(this.volumes)
@@ -2051,10 +2046,10 @@ __webpack_require__.r(__webpack_exports__);
     getImages: function getImages() {
       var _this3 = this;
 
-      axios.get(this.$store.state.url + '/compute/v2.1/images', {
+      axios.get(this.$store.state.url + "/compute/v2.1/images", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         _this3.images = response.data.images; //console.log(this.images)
@@ -2064,38 +2059,41 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       var payload = {
-        "server": {
-          "name": this.instanceData.name,
-          "imageRef": this.instanceData.image,
-          "flavorRef": this.instanceData.flavorID,
-          "description": this.instanceData.description,
-          "networks": [{
-            "uuid": "1147a077-f1e5-479a-bb81-e56a49438158"
+        server: {
+          name: this.instanceData.name,
+          imageRef: this.instanceData.image,
+          flavorRef: this.instanceData.flavorID,
+          description: this.instanceData.description,
+          networks: [{
+            uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
           }]
         }
       }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
 
       console.log(payload);
-      axios.post(this.$store.state.url + '/compute/v2.1/servers', payload, {
+      axios.post(this.$store.state.url + "/compute/v2.1/servers", payload, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-OpenStack-Nova-API-Version": "2.19",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
+        console.dir(response);
+
         if (response.status == 202) {
-          Vue.$toast.open('Instância ' + _this4.instanceData.name + " criada com sucesso!");
+          Vue.$toast.open("Instância " + _this4.instanceData.name + " criada com sucesso!");
 
           _this4.goBack();
         }
 
         console.log(response);
         /*
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        }
-        */
+          if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+          }
+          */
       });
     },
     goBack: function goBack() {
@@ -2442,6 +2440,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2462,24 +2472,24 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var payload = {
-        "auth": {
-          "identity": {
-            "methods": ["password"],
-            "password": {
-              "user": {
-                "name": this.userData.username,
-                "domain": {
-                  "name": "Default"
+        auth: {
+          identity: {
+            methods: ["password"],
+            password: {
+              user: {
+                name: this.userData.username,
+                domain: {
+                  name: "Default"
                 },
-                "password": this.userData.password
+                password: this.userData.password
               }
             }
           }
         }
       };
-      axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
+      axios.post(this.$store.state.url + "/identity/v3/auth/tokens", payload, {
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       }).then(function (response) {
         if (response.headers["x-subject-token"]) {
@@ -2505,7 +2515,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    console.log("Component mounted.");
   }
 });
 
@@ -2640,6 +2650,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2654,10 +2691,10 @@ __webpack_require__.r(__webpack_exports__);
     getInstances: function getInstances() {
       var _this = this;
 
-      axios.get(this.$store.state.url + '/compute/v2.1/servers', {
+      axios.get(this.$store.state.url + "/compute/v2.1/servers", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         _this.instancesList = response.data.servers;
@@ -2678,10 +2715,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     getVolumes: function getVolumes() {
       console.log(this.$store.state.currentProjectID);
-      axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
+      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         console.log(response.data);
@@ -2692,19 +2729,19 @@ __webpack_require__.r(__webpack_exports__);
 
       console.log("Função: removeInstance"); //if(instance)
 
-      axios["delete"](this.$store.state.url + '/compute/v2.1/servers/' + instance.id, {
+      axios["delete"](this.$store.state.url + "/compute/v2.1/servers/" + instance.id, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         if (response.status == 204) {
-          Vue.$toast.open('Instância ' + instance.name + " apagado com sucesso!");
+          Vue.$toast.open("Instância " + instance.name + " apagado com sucesso!");
           _this2.instancesList = [];
 
           _this2.getInstances();
         } else {
-          Vue.$toast.open('Houve um erro ao apagar a instância ' + instance.name + "!");
+          Vue.$toast.open("Houve um erro ao apagar a instância " + instance.name + "!");
         }
 
         console.log(response);
@@ -2719,10 +2756,11 @@ __webpack_require__.r(__webpack_exports__);
       var i;
 
       for (var _i = 0; _i < this.instancesList.length; _i++) {
-        axios.get(this.$store.state.url + '/compute/v2.1/servers/' + this.instancesList[_i].id, {
+        axios.get(this.$store.state.url + "/compute/v2.1/servers/" + this.instancesList[_i].id, {
           headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': this.$store.state.projectScopedToken
+            "Content-Type": "application/json",
+            "X-OpenStack-Nova-API-Version": "2.19",
+            "X-Auth-Token": this.$store.state.projectScopedToken
           }
         }).then(function (response) {
           //console.log(response.data.server)
@@ -2731,15 +2769,16 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
 
+      console.log("Instances details:");
       console.log(this.instancesDetails);
     },
     getImagesDetails: function getImagesDetails() {
       var _this4 = this;
 
-      axios.get(this.$store.state.url + '/compute/v2.1/images', {
+      axios.get(this.$store.state.url + "/compute/v2.1/images", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         //for(let i=0; i<response.data.images.length; i++){
@@ -2751,10 +2790,10 @@ __webpack_require__.r(__webpack_exports__);
     verificarImage: function verificarImage(imageAVerificar) {
       for (var i = 0; i < this.imagesDetails[0].length; i++) {
         /*
-        console.log(i)
-        console.log("Imagem a verificar" + imageAVerificar)
-        console.log(this.imagesDetails[0][i].id)
-        */
+                    console.log(i)
+                    console.log("Imagem a verificar" + imageAVerificar)
+                    console.log(this.imagesDetails[0][i].id)
+                    */
         if (this.imagesDetails[0][i].id == imageAVerificar) {
           //console.log(this.imagesDetails[i][0].name)
           return this.imagesDetails[0][i].name;
@@ -2764,10 +2803,10 @@ __webpack_require__.r(__webpack_exports__);
     getFlavorsDetails: function getFlavorsDetails() {
       var _this5 = this;
 
-      axios.get(this.$store.state.url + '/compute/v2.1/flavors', {
+      axios.get(this.$store.state.url + "/compute/v2.1/flavors", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         _this5.flavorsDetails = response.data.flavors;
@@ -2844,6 +2883,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2856,10 +2909,10 @@ __webpack_require__.r(__webpack_exports__);
     getProjects: function getProjects() {
       var _this = this;
 
-      axios.get(this.$store.state.url + '/identity/v3/auth/projects', {
+      axios.get(this.$store.state.url + "/identity/v3/auth/projects", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.token
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.token
         }
       }).then(function (response) {
         _this.projectList = response.data;
@@ -2868,33 +2921,33 @@ __webpack_require__.r(__webpack_exports__);
     changeProject: function changeProject(project) {
       var _this2 = this;
 
-      this.$store.commit('setCurrentProjectID', project.id);
-      this.$store.commit('setCurrentProjectName', project.name);
+      this.$store.commit("setCurrentProjectID", project.id);
+      this.$store.commit("setCurrentProjectName", project.name);
       var payload = {
-        "auth": {
-          "identity": {
-            "methods": ["password"],
-            "password": {
-              "user": {
-                "id": this.$store.state.userID,
-                "password": this.$store.state.userPassword
+        auth: {
+          identity: {
+            methods: ["password"],
+            password: {
+              user: {
+                id: this.$store.state.userID,
+                password: this.$store.state.userPassword
               }
             }
           },
-          "scope": {
-            "project": {
-              "id": this.$store.state.currentProjectID
+          scope: {
+            project: {
+              id: this.$store.state.currentProjectID
             }
           }
         }
       };
-      axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
+      axios.post(this.$store.state.url + "/identity/v3/auth/tokens", payload, {
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       }).then(function (response) {
         //Token scoped para o projectID
-        _this2.$store.commit('setProjectScopedToken', response.headers["x-subject-token"]);
+        _this2.$store.commit("setProjectScopedToken", response.headers["x-subject-token"]);
 
         _this2.$router.push("/projectDetails");
       });
@@ -2903,37 +2956,37 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       var payload = {
-        "auth": {
-          "identity": {
-            "methods": ["password"],
-            "password": {
-              "user": {
-                "id": this.$store.state.userID,
-                "password": this.$store.state.userPassword
+        auth: {
+          identity: {
+            methods: ["password"],
+            password: {
+              user: {
+                id: this.$store.state.userID,
+                password: this.$store.state.userPassword
               }
             }
           },
-          "scope": {
-            "project": {
-              "id": project.id
+          scope: {
+            project: {
+              id: project.id
             }
           }
         }
       };
-      axios.post(this.$store.state.url + '/identity/v3/auth/tokens', payload, {
+      axios.post(this.$store.state.url + "/identity/v3/auth/tokens", payload, {
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       }).then(function (response) {
         _this3.tokenProjeto = response.headers["x-subject-token"];
-        axios["delete"](_this3.$store.state.url + '/identity/v3/projects/' + project.id, {
+        axios["delete"](_this3.$store.state.url + "/identity/v3/projects/" + project.id, {
           headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': _this3.tokenProjeto
+            "Content-Type": "application/json",
+            "X-Auth-Token": _this3.tokenProjeto
           }
         }).then(function (response) {
           if (response.status == 204) {
-            Vue.$toast.open('Projeto ' + project.name + " apagado com sucesso!");
+            Vue.$toast.open("Projeto " + project.name + " apagado com sucesso!");
             _this3.projectList = [];
 
             _this3.getProjects();
@@ -39129,10 +39182,11 @@ var render = function() {
                   "option",
                   { key: option.id, domProps: { value: option.id } },
                   [
-                    _vm._v(
-                      _vm._s("ID: " + option.id + "      Name: " + option.name)
-                    )
-                  ]
+                    option.name
+                      ? _c("div", [_vm._v(_vm._s(option.name))])
+                      : _c("dir", [_vm._v(_vm._s(option.id))])
+                  ],
+                  1
                 )
               }),
               0
@@ -39451,7 +39505,7 @@ var render = function() {
                   expression: "userData.username"
                 }
               ],
-              staticClass: "form-control ",
+              staticClass: "form-control",
               attrs: { type: "text", name: "username", required: "" },
               domProps: { value: _vm.userData.username },
               on: {
@@ -39466,9 +39520,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "col-xs-4" }, [
-            _c("label", { attrs: { htmlFor: "password" } }, [
-              _vm._v("Password")
-            ]),
+            _c("label", { attrs: { for: "password" } }, [_vm._v("Password")]),
             _vm._v(" "),
             _c("input", {
               directives: [
@@ -39607,9 +39659,11 @@ var render = function() {
       },
       [_vm._v("Criar nova instância")]
     ),
+    _vm._v(" "),
     _c("br"),
     _vm._v(" "),
     _c("br"),
+    _vm._v(" "),
     _c("br"),
     _vm._v(" "),
     _vm.instancesList.length
@@ -39632,6 +39686,14 @@ var render = function() {
                   return _c("tr", { key: instance }, [
                     _c("td", [_vm._v(_vm._s(instance.name))]),
                     _vm._v(" "),
+                    instance.description
+                      ? _c("div", [
+                          _c("td", [_vm._v(_vm._s(instance.description))])
+                        ])
+                      : _c("div", [
+                          _c("td", [_vm._v(_vm._s("No description"))])
+                        ]),
+                    _vm._v(" "),
                     instance.image.id == null
                       ? _c("td", [_vm._v("Boot from volume")])
                       : _c("td", [
@@ -39643,31 +39705,19 @@ var render = function() {
                       [
                         _vm._l(instance.addresses.private, function(privateIP) {
                           return _c("div", { key: privateIP }, [
-                            _vm._v(
-                              "\n                                " +
-                                _vm._s(privateIP.addr) +
-                                "\n                            "
-                            )
+                            _vm._v(_vm._s(privateIP.addr))
                           ])
                         }),
                         _vm._v(" "),
                         _vm._l(instance.addresses.shared, function(sharedIP) {
                           return _c("div", { key: sharedIP }, [
-                            _vm._v(
-                              "\n                                " +
-                                _vm._s(sharedIP.addr) +
-                                "\n                            "
-                            )
+                            _vm._v(_vm._s(sharedIP.addr))
                           ])
                         }),
                         _vm._v(" "),
                         _vm._l(instance.addresses.public, function(publicIP) {
                           return _c("div", { key: publicIP }, [
-                            _vm._v(
-                              "\n                                " +
-                                _vm._s(publicIP.addr) +
-                                "\n                            "
-                            )
+                            _vm._v(_vm._s(publicIP.addr))
                           ])
                         })
                       ],
@@ -39682,22 +39732,28 @@ var render = function() {
                       ? _c("td", [_vm._v("-")])
                       : _c("td", [_vm._v(_vm._s(instance.key_name))]),
                     _vm._v(" "),
+                    _c("td", [
+                      instance.locked
+                        ? _c("div", [_vm._v(_vm._s("LOCKED"))])
+                        : _c("div", [_vm._v(_vm._s("NOT LOCKED"))])
+                    ]),
+                    _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(instance["OS-EXT-STS:vm_state"]))]),
                     _vm._v(" "),
                     instance["OS-EXT-STS:power_state"] == null
                       ? _c("td", [_vm._v("-")])
                       : instance["OS-EXT-STS:power_state"] == 0
-                      ? _c("td", [_vm._v(" NOSTATE ")])
+                      ? _c("td", [_vm._v("NOSTATE")])
                       : instance["OS-EXT-STS:power_state"] == 1
-                      ? _c("td", [_vm._v(" RUNNING ")])
+                      ? _c("td", [_vm._v("RUNNING")])
                       : instance["OS-EXT-STS:power_state"] == 3
-                      ? _c("td", [_vm._v(" PAUSED ")])
+                      ? _c("td", [_vm._v("PAUSED")])
                       : instance["OS-EXT-STS:power_state"] == 4
-                      ? _c("td", [_vm._v(" SHUTDOWN ")])
+                      ? _c("td", [_vm._v("SHUTDOWN")])
                       : instance["OS-EXT-STS:power_state"] == 6
-                      ? _c("td", [_vm._v(" CRASHED ")])
+                      ? _c("td", [_vm._v("CRASHED")])
                       : instance["OS-EXT-STS:power_state"] == 7
-                      ? _c("td", [_vm._v(" SUSPENDED ")])
+                      ? _c("td", [_vm._v("SUSPENDED")])
                       : _vm._e(),
                     _vm._v(" "),
                     _c("td", [
@@ -39773,6 +39829,7 @@ var render = function() {
           ])
         ])
       : _vm._e(),
+    _vm._v(" "),
     _c("br"),
     _vm._v(" "),
     _c(
@@ -39797,6 +39854,8 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Name")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Description")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Image name")]),
         _vm._v(" "),
         _c("th", [_vm._v("IP Adressess (Private, public, shared)")]),
@@ -39804,6 +39863,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Flavor")]),
         _vm._v(" "),
         _c("th", [_vm._v("Key Pair")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Locked")]),
         _vm._v(" "),
         _c("th", [_vm._v("Status")]),
         _vm._v(" "),
@@ -39889,7 +39950,7 @@ var render = function() {
                       _c(
                         "button",
                         {
-                          staticClass: "btn btn-lg btn-warning ",
+                          staticClass: "btn btn-lg btn-warning",
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
@@ -39899,13 +39960,11 @@ var render = function() {
                         },
                         [_vm._v("Update")]
                       ),
-                      _vm._v(
-                        "\n                             \n                            "
-                      ),
+                      _vm._v("\n               \n              "),
                       _c(
                         "button",
                         {
-                          staticClass: "btn btn-lg btn-danger ",
+                          staticClass: "btn btn-lg btn-danger",
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
@@ -39934,6 +39993,7 @@ var render = function() {
           ])
         ])
       : _vm._e(),
+    _vm._v(" "),
     _c("br")
   ])
 }
@@ -56886,8 +56946,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
