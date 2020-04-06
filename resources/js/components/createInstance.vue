@@ -95,10 +95,6 @@ export default {
         { text: "Image", value: 2 },
         { text: "Volume", value: 3 }
       ],
-      optionsPayment: [
-        { text: "Bank Transfer", value: "bt" },
-        { text: "MB Payment", value: "mb" }
-      ],
       error: null
     };
   },
@@ -150,11 +146,12 @@ export default {
         });
     },
     createInstance: function() {
+      
       let payload = {
         server: {
           name: this.instanceData.name,
-          imageRef: this.instanceData.image,
           flavorRef: this.instanceData.flavorID,
+          imageRef: this.instanceData.image,
           description: this.instanceData.description,
           networks: [
             {
@@ -163,6 +160,7 @@ export default {
           ]
         }
       };
+
       //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
       console.log(payload);
       axios
