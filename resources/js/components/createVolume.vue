@@ -10,13 +10,23 @@
             class="form-control"
             name="name"
             id="name"
+            placeholder="Volume Name"
             v-model="volumeData.name"
         />
     </div>
+   <div>
+ <label for="size">Size in GB</label>
 <div class="input-group themable-spinner spinner-initialized">
-
- <input type="number" name="size" value="1" min="1" class="form-control"  required="" id="id_size" v-model="volumeData.size" >
-        <!-- <label for="size">Size</label>
+ 
+ <input 
+ type="number" 
+ name="size"
+  value="1" min="1" 
+  class="form-control"  
+  required="" 
+  id="id_size" v-model="volumeData.size"  >
+  
+  </div>        <!-- <label for="size">Size</label>
              <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1000" data-slider-step="1" data-slider-value="14" v-model="volumeData.size"/>
        <label for="customRange1">Example range</label> -->
    

@@ -2225,6 +2225,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -39331,7 +39341,12 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
-        attrs: { type: "text", name: "name", id: "name" },
+        attrs: {
+          type: "text",
+          name: "name",
+          id: "name",
+          placeholder: "Volume Name"
+        },
         domProps: { value: _vm.volumeData.name },
         on: {
           input: function($event) {
@@ -39344,40 +39359,44 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "input-group themable-spinner spinner-initialized" },
-      [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.volumeData.size,
-              expression: "volumeData.size"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "number",
-            name: "size",
-            value: "1",
-            min: "1",
-            required: "",
-            id: "id_size"
-          },
-          domProps: { value: _vm.volumeData.size },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+    _c("div", [
+      _c("label", { attrs: { for: "size" } }, [_vm._v("Size in GB")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "input-group themable-spinner spinner-initialized" },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.volumeData.size,
+                expression: "volumeData.size"
               }
-              _vm.$set(_vm.volumeData, "size", $event.target.value)
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "number",
+              name: "size",
+              value: "1",
+              min: "1",
+              required: "",
+              id: "id_size"
+            },
+            domProps: { value: _vm.volumeData.size },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.volumeData, "size", $event.target.value)
+              }
             }
-          }
-        })
-      ]
-    ),
+          })
+        ]
+      )
+    ]),
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
@@ -56946,8 +56965,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
