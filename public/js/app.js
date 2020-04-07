@@ -2163,8 +2163,8 @@ __webpack_require__.r(__webpack_exports__);
       var payload = {
         server: {
           name: this.instanceData.name,
-          flavorRef: this.instanceData.flavorID,
           imageRef: this.instanceData.image,
+          flavorRef: this.instanceData.flavorID,
           description: this.instanceData.description,
           networks: [{
             uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
@@ -2244,40 +2244,60 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
+//import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       volumeData: {
         name: "",
-        size: null
+        projectID: null,
+        volume: null,
+        size: 0
       },
-      totalGBLeft: null,
+      volumes: [],
       error: null
     };
   },
   methods: {
-    getGBAvailable: function getGBAvailable() {
+    getFlavors: function getFlavors() {
       var _this = this;
 
-      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/limits", {
+      console.log(this.$store.state.projectScopedToken);
+      axios.get(this.$store.state.url + "/compute/v2.1/flavors", {
         headers: {
           "Content-Type": "application/json",
           "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
-        _this.totalGBLeft = response.data.limits.absolute.maxTotalVolumeGigabytes - response.data.limits.absolute.totalGigabytesUsed; //console.log("Gb left for volumes: " + this.totalGBLeft);
-        //console.log(response);
+        _this.flavors = response.data.flavors; //console.log(this.flavors)
+      });
+    },
+    getVolumes: function getVolumes() {
+      var _this2 = this;
+
+      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this2.volumes = response.data.volumes; //console.log(this.volumes)
+      });
+    },
+    getImages: function getImages() {
+      var _this3 = this;
+
+      axios.get(this.$store.state.url + "/compute/v2.1/images", {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this3.images = response.data.images; //console.log(this.images)
       });
     },
     createVolume: function createVolume() {
-      var _this2 = this;
+      var _this4 = this;
 
       var payload = {
         volume: {
@@ -2293,7 +2313,51 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         if (response.status == 202) {
-          Vue.$toast.open("Volume " + _this2.volumeData.name + " created with success!");
+          Vue.$toast.open("Volume  " + _this4.volumeData.name + " criado com sucesso!");
+
+          _this4.goBack();
+        }
+
+        console.log(response);
+        /*
+          if (error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+          }
+          */
+      });
+    },
+    createInstance: function createInstance() {
+      var _this5 = this;
+
+      var payload = {
+        server: {
+          name: this.instanceData.name,
+          imageRef: this.instanceData.image,
+          flavorRef: this.instanceData.flavorID,
+          description: this.instanceData.description,
+          networks: [{
+            uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
+          }]
+        }
+      }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
+
+      console.log(payload);
+      axios.post(this.$store.state.url + "/compute/v2.1/servers", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        if (response.status == 202) {
+          Vue.$toast.open("Instância " + _this5.instanceData.name + " criada com sucesso!");
+
+          _this5.goBack();
+        }
+      }).then(function (response) {
+        if (response.status == 202) {
+          Vue.$toast.open("Volume " + _this5.volumeData.name + " created with success!");
         }
 
         console.log(response);
@@ -2301,7 +2365,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    this.getGBAvailable();
+    this.getFlavors();
+    this.getVolumes();
+    this.getImages();
   }
 });
 
@@ -39390,37 +39456,7 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "form-group row" }, [
-      _c("div", { staticClass: "col-xs-3" }, [
-        _c("label", { attrs: { for: "size" } }, [_vm._v("Volume size (GB)")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.volumeData.size,
-              expression: "volumeData.size"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { name: "size", id: "size", type: "number" },
-          domProps: { value: _vm.volumeData.size },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.volumeData, "size", $event.target.value)
-            }
-          }
-        })
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _vm._v(_vm._s(this.totalGBLeft + " GB available"))
-    ]),
+    _c("br"),
     _vm._v(" "),
     _vm.error
       ? _c(
@@ -39441,11 +39477,25 @@ var render = function() {
           on: {
             click: function($event) {
               $event.preventDefault()
-              return _vm.createVolume()
+              return _vm.createVolume($event)
             }
           }
         },
-        [_vm._v("Create volume")]
+        [_vm._v("Create")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              return _vm.goBack()
+            }
+          }
+        },
+        [_vm._v("Cancel")]
       )
     ])
   ])
@@ -56939,7 +56989,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     url: "http://134.122.49.176",
-    //url: "http://192.168.1.132",
     token: "",
     user: null,
     userID: null,

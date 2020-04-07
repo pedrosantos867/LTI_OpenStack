@@ -172,8 +172,8 @@ export default {
       let payload = {
         server: {
           name: this.instanceData.name,
-          flavorRef: this.instanceData.flavorID,
           imageRef: this.instanceData.image,
+          flavorRef: this.instanceData.flavorID,
           description: this.instanceData.description,
           networks: [
             {
