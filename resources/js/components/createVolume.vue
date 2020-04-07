@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div class="jumbotron">
-      <h1>Create Volume</h1>
-    </div>
-
     <div class="form-group">
-      <label for="name">Name</label>
+      <label for="name">Name of the new volume</label>
       <input class="form-control" type="text" name="name" id="name" v-model="volumeData.name" />
     </div>
 
@@ -18,12 +14,10 @@
 
     <div class="form-group">{{this.totalGBLeft + " GB available"}}</div>
 
-    <br />
     <div v-if="error" class="alert alert-danger" role="alert">{{error}}</div>
     <hr />
     <div>
-      <button type="button" class="btn btn-primary" v-on:click.prevent="createVolume()">Create</button>
-      <button type="button" class="btn btn-danger" v-on:click="goBack()">Cancel</button>
+      <button type="button" class="btn btn-primary" v-on:click.prevent="createVolume()">Create volume</button>
     </div>
   </div>
 </template>
@@ -88,15 +82,11 @@ export default {
         .then(response => {
           if (response.status == 202) {
             Vue.$toast.open(
-              "Volume  " + this.volumeData.name + " criado com sucesso!"
+              "Volume " + this.volumeData.name + " created with success!"
             );
-            this.goBack();
           }
           console.log(response);
         });
-    },
-    goBack: function() {
-      this.$router.push("/projectDetails");
     }
   },
   mounted() {

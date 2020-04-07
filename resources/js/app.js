@@ -8,7 +8,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import Home from './components/home'
-import Login from './components/login'
+import Login from    './components/login'
 import Logout from './components/logout'
 import ProjectsList from './components/projectsList'
 import ProjectDetails from './components/projectDetails'
