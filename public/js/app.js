@@ -2225,36 +2225,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       volumeData: {
         name: "",
-        projectID: null,
-        volume: null,
-        size: 0
+        size: null
       },
-      volumes: [],
+      totalGBLeft: null,
       error: null
     };
   },
   methods: {
-    getFlavors: function getFlavors() {
-      var _this = this;
-
-      console.log(this.$store.state.projectScopedToken);
-      axios.get(this.$store.state.url + '/compute/v2.1/flavors', {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        _this.flavors = response.data.flavors; //console.log(this.flavors)
-      });
-    },
     getVolumes: function getVolumes() {
-      var _this2 = this;
+      var _this = this;
 
       axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
         headers: {
@@ -2262,23 +2260,25 @@ __webpack_require__.r(__webpack_exports__);
           'X-Auth-Token': this.$store.state.projectScopedToken
         }
       }).then(function (response) {
-        _this2.volumes = response.data.volumes; //console.log(this.volumes)
+        _this.volumes = response.data.volumes; //console.log(this.volumes)
       });
     },
-    getImages: function getImages() {
-      var _this3 = this;
+    getGBAvailable: function getGBAvailable() {
+      var _this2 = this;
 
-      axios.get(this.$store.state.url + '/compute/v2.1/images', {
+      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/limits", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
-        _this3.images = response.data.images; //console.log(this.images)
+        _this2.totalGBLeft = response.data.limits.absolute.maxTotalVolumeGigabytes - response.data.limits.absolute.totalGigabytesUsed;
+        /*           console.log("Gb left for volumes: " + this.totalGBLeft);
+                  console.log(response); */
       });
     },
     createVolume: function createVolume() {
-      var _this4 = this;
+      var _this3 = this;
 
       var payload = {
         "volume": {
@@ -2294,47 +2294,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         if (response.status == 202) {
-          Vue.$toast.open('Volume  ' + _this4.volumeData.name + " criado com sucesso!");
+          Vue.$toast.open('Volume  ' + _this3.volumeData.name + " criado com sucesso!");
 
-          _this4.goBack();
-        }
-
-        console.log(response);
-        /*
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        }
-        */
-      });
-    },
-    createInstance: function createInstance() {
-      var _this5 = this;
-
-      var payload = {
-        "server": {
-          "name": this.instanceData.name,
-          "imageRef": this.instanceData.image,
-          "flavorRef": this.instanceData.flavorID,
-          "description": this.instanceData.description,
-          "networks": [{
-            "uuid": "1147a077-f1e5-479a-bb81-e56a49438158"
-          }]
-        }
-      }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
-
-      console.log(payload);
-      axios.post(this.$store.state.url + '/compute/v2.1/servers', payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        if (response.status == 202) {
-          Vue.$toast.open('Instância ' + _this5.instanceData.name + " criada com sucesso!");
-
-          _this5.goBack();
+          _this3.goBack();
         }
 
         console.log(response);
@@ -2375,9 +2337,7 @@ __webpack_require__.r(__webpack_exports__);
 
   },
   mounted: function mounted() {
-    this.getFlavors();
-    this.getVolumes();
-    this.getImages();
+    this.getGBAvailable();
   }
 });
 
@@ -39331,7 +39291,12 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
-        attrs: { type: "text", name: "name", id: "name" },
+        attrs: {
+          type: "text",
+          name: "name",
+          id: "name",
+          placeholder: "Volume Name"
+        },
         domProps: { value: _vm.volumeData.name },
         on: {
           input: function($event) {
@@ -39344,40 +39309,48 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "input-group themable-spinner spinner-initialized" },
-      [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.volumeData.size,
-              expression: "volumeData.size"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "number",
-            name: "size",
-            value: "1",
-            min: "1",
-            required: "",
-            id: "id_size"
-          },
-          domProps: { value: _vm.volumeData.size },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+    _c("div", [
+      _c("label", { attrs: { for: "size" } }, [_vm._v("Size in GB")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "input-group themable-spinner spinner-initialized" },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.volumeData.size,
+                expression: "volumeData.size"
               }
-              _vm.$set(_vm.volumeData, "size", $event.target.value)
+            ],
+            staticClass: "form-control",
+            attrs: {
+              type: "number",
+              name: "size",
+              value: "1",
+              min: "1",
+              required: "",
+              id: "id_size"
+            },
+            domProps: { value: _vm.volumeData.size },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.volumeData, "size", $event.target.value)
+              }
             }
-          }
-        })
-      ]
-    ),
+          })
+        ]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group" }, [
+        _vm._v(_vm._s(this.totalGBLeft + " GB available"))
+      ])
+    ]),
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),
@@ -56422,14 +56395,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!**************************************************!*\
   !*** ./resources/js/components/createVolume.vue ***!
   \**************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createVolume_vue_vue_type_template_id_a56727fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createVolume.vue?vue&type=template&id=a56727fe& */ "./resources/js/components/createVolume.vue?vue&type=template&id=a56727fe&");
 /* harmony import */ var _createVolume_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createVolume.vue?vue&type=script&lang=js& */ "./resources/js/components/createVolume.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _createVolume_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _createVolume_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -56459,7 +56433,7 @@ component.options.__file = "resources/js/components/createVolume.vue"
 /*!***************************************************************************!*\
   !*** ./resources/js/components/createVolume.vue?vue&type=script&lang=js& ***!
   \***************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

@@ -10,13 +10,26 @@
             class="form-control"
             name="name"
             id="name"
+            placeholder="Volume Name"
             v-model="volumeData.name"
         />
     </div>
+     
+   <div>
+ <label for="size">Size in GB</label>
 <div class="input-group themable-spinner spinner-initialized">
-
- <input type="number" name="size" value="1" min="1" class="form-control"  required="" id="id_size" v-model="volumeData.size" >
-        <!-- <label for="size">Size</label>
+ 
+ <input 
+ type="number" 
+ name="size"
+  value="1" min="1" 
+  class="form-control"  
+  required="" 
+  id="id_size" v-model="volumeData.size"  >
+  
+  </div> 
+  <div class="form-group">{{this.totalGBLeft + " GB available"}}</div>
+         <!-- <label for="size">Size</label>
              <input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="1000" data-slider-step="1" data-slider-value="14" v-model="volumeData.size"/>
        <label for="customRange1">Example range</label> -->
    
@@ -89,27 +102,13 @@ export default {
     return {
       volumeData: {
         name: "",
-        projectID: null,
-        volume: null,
-        size: 0,
+        size: null
       },
-      volumes: [],
+      totalGBLeft: null,
       error: null
     };
   },
   methods: {
-    getFlavors: function() {
-        console.log(this.$store.state.projectScopedToken)
-        axios.get(this.$store.state.url + '/compute/v2.1/flavors',{
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': this.$store.state.projectScopedToken
-            },
-        }).then(response => {
-            this.flavors = response.data.flavors
-            //console.log(this.flavors)
-        });
-    },
     getVolumes: function() {
         axios.get(this.$store.state.url + '/volume/v3/'+ this.$store.state.currentProjectID + '/volumes',{
             headers: {
@@ -121,17 +120,29 @@ export default {
             //console.log(this.volumes)
         });
     }, 
-    getImages: function() {
-        axios.get(this.$store.state.url + '/compute/v2.1/images',{
+
+    getGBAvailable: function() {
+      axios
+        .get(
+          this.$store.state.url +
+            "/volume/v3/" +
+            this.$store.state.currentProjectID +
+            "/limits",
+          {
             headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': this.$store.state.projectScopedToken
-            },
-        }).then(response => {
-            this.images = response.data.images
-            //console.log(this.images)
+              "Content-Type": "application/json",
+              "X-Auth-Token": this.$store.state.projectScopedToken,
+            }
+          }
+        )
+        .then(response => {
+          this.totalGBLeft =
+            response.data.limits.absolute.maxTotalVolumeGigabytes -
+            response.data.limits.absolute.totalGigabytesUsed;
+/*           console.log("Gb left for volumes: " + this.totalGBLeft);
+          console.log(response); */
         });
-    }, 
+    },
     createVolume: function(){
         let payload = 
 
@@ -152,7 +163,7 @@ export default {
                 Vue.$toast.open('Volume  ' + this.volumeData.name + " criado com sucesso!");
                 this.goBack();
             }
-            
+
             console.log(response)
             /*
             if (error.response) {
@@ -163,45 +174,7 @@ export default {
             */
         });
     },
-    createInstance: function() {
-        let payload = 
-        {
-            "server": {
-                "name": this.instanceData.name,
-                "imageRef": this.instanceData.image,
-                "flavorRef": this.instanceData.flavorID,
-                "description": this.instanceData.description,
-                "networks": [
-                    {
-                        "uuid": "1147a077-f1e5-479a-bb81-e56a49438158"
-                    }
-                ]
-            }
-        }
-        
-        //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
-        console.log(payload)
-        axios.post(this.$store.state.url + '/compute/v2.1/servers', payload, {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': this.$store.state.projectScopedToken
-            },
-        }).then(response => {
-            if(response.status == 202){
-                Vue.$toast.open('Instância ' + this.instanceData.name + " criada com sucesso!");
-                this.goBack();
-            }
-            
-            console.log(response)
-            /*
-            if (error.response) {
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            }
-            */
-        });
-    },
+   
     goBack: function() {
         this.$router.push("/projectDetails");
     }
@@ -229,9 +202,7 @@ export default {
     */
   },
   mounted() {
-      this.getFlavors()
-      this.getVolumes()
-      this.getImages()
+      this.getGBAvailable()
   }
 };
 </script>
