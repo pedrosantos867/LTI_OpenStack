@@ -2007,13 +2007,6 @@ __webpack_require__.r(__webpack_exports__);
         text: "Volume",
         value: 3
       }],
-      optionsPayment: [{
-        text: "Bank Transfer",
-        value: "bt"
-      }, {
-        text: "MB Payment",
-        value: "mb"
-      }],
       error: null
     };
   },
@@ -2061,8 +2054,8 @@ __webpack_require__.r(__webpack_exports__);
       var payload = {
         server: {
           name: this.instanceData.name,
-          imageRef: this.instanceData.image,
           flavorRef: this.instanceData.flavorID,
+          imageRef: this.instanceData.image,
           description: this.instanceData.description,
           networks: [{
             uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
@@ -2171,223 +2164,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       volumeData: {
         name: "",
-        projectID: null,
-        volume: null,
-        size: 0
+        size: null
       },
-      volumes: [],
+      totalGBLeft: null,
       error: null
     };
   },
   methods: {
-    getFlavors: function getFlavors() {
+    getGBAvailable: function getGBAvailable() {
       var _this = this;
 
-      console.log(this.$store.state.projectScopedToken);
-      axios.get(this.$store.state.url + '/compute/v2.1/flavors', {
+      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/limits", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
-        _this.flavors = response.data.flavors; //console.log(this.flavors)
-      });
-    },
-    getVolumes: function getVolumes() {
-      var _this2 = this;
-
-      axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        _this2.volumes = response.data.volumes; //console.log(this.volumes)
-      });
-    },
-    getImages: function getImages() {
-      var _this3 = this;
-
-      axios.get(this.$store.state.url + '/compute/v2.1/images', {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        _this3.images = response.data.images; //console.log(this.images)
+        _this.totalGBLeft = response.data.limits.absolute.maxTotalVolumeGigabytes - response.data.limits.absolute.totalGigabytesUsed; //console.log("Gb left for volumes: " + this.totalGBLeft);
+        //console.log(response);
       });
     },
     createVolume: function createVolume() {
-      var _this4 = this;
+      var _this2 = this;
 
       var payload = {
-        "volume": {
-          "size": this.volumeData.size,
-          "name": this.volumeData.name
+        volume: {
+          size: this.volumeData.size,
+          name: this.volumeData.name
         }
       };
       console.log(payload);
-      axios.post(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', payload, {
+      axios.post(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", payload, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         if (response.status == 202) {
-          Vue.$toast.open('Volume  ' + _this4.volumeData.name + " criado com sucesso!");
+          Vue.$toast.open("Volume  " + _this2.volumeData.name + " criado com sucesso!");
 
-          _this4.goBack();
+          _this2.goBack();
         }
 
         console.log(response);
-        /*
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        }
-        */
-      });
-    },
-    createInstance: function createInstance() {
-      var _this5 = this;
-
-      var payload = {
-        "server": {
-          "name": this.instanceData.name,
-          "imageRef": this.instanceData.image,
-          "flavorRef": this.instanceData.flavorID,
-          "description": this.instanceData.description,
-          "networks": [{
-            "uuid": "1147a077-f1e5-479a-bb81-e56a49438158"
-          }]
-        }
-      }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
-
-      console.log(payload);
-      axios.post(this.$store.state.url + '/compute/v2.1/servers', payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        if (response.status == 202) {
-          Vue.$toast.open('Instância ' + _this5.instanceData.name + " criada com sucesso!");
-
-          _this5.goBack();
-        }
-
-        console.log(response);
-        /*
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        }
-        */
       });
     },
     goBack: function goBack() {
       this.$router.push("/projectDetails");
     }
-    /*
-    getCategories: function() {
-      axios.get("api/categories/e").then(response => {
-        this.categories = response.data.data;
-      });
-    },
-    createMovement: function() {
-      //   console.log(this.movementData);
-      this.error = null;
-      axios
-        .post("api/movement/create", this.movementData)
-        .then(response => {
-          console.log(response);
-          this.$router.push("/wallet");
-          this.$socket.emit("userUpdated", this.movementData.email);
-        })
-        .catch(err => {
-          this.error = err.response.data.message;
-          console.log(err.response.data);
-        });
-    }
-    */
-
   },
   mounted: function mounted() {
-    this.getFlavors();
-    this.getVolumes();
-    this.getImages();
+    this.getGBAvailable();
   }
 });
 
@@ -39328,7 +39160,7 @@ var render = function() {
   return _c("div", [
     _vm._m(0),
     _vm._v(" "),
-    _c("div", [
+    _c("div", { staticClass: "form-group" }, [
       _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
       _vm._v(" "),
       _c("input", {
@@ -39341,12 +39173,7 @@ var render = function() {
           }
         ],
         staticClass: "form-control",
-        attrs: {
-          type: "text",
-          name: "name",
-          id: "name",
-          placeholder: "Volume Name"
-        },
+        attrs: { type: "text", name: "name", id: "name" },
         domProps: { value: _vm.volumeData.name },
         on: {
           input: function($event) {
@@ -39359,43 +39186,36 @@ var render = function() {
       })
     ]),
     _vm._v(" "),
-    _c("div", [
-      _c("label", { attrs: { for: "size" } }, [_vm._v("Size in GB")]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "input-group themable-spinner spinner-initialized" },
-        [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.volumeData.size,
-                expression: "volumeData.size"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "number",
-              name: "size",
-              value: "1",
-              min: "1",
-              required: "",
-              id: "id_size"
-            },
-            domProps: { value: _vm.volumeData.size },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.$set(_vm.volumeData, "size", $event.target.value)
-              }
+    _c("div", { staticClass: "form-group row" }, [
+      _c("div", { staticClass: "col-xs-3" }, [
+        _c("label", { attrs: { for: "size" } }, [_vm._v("Volume size (GB)")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.volumeData.size,
+              expression: "volumeData.size"
             }
-          })
-        ]
-      )
+          ],
+          staticClass: "form-control",
+          attrs: { name: "size", id: "size", type: "number" },
+          domProps: { value: _vm.volumeData.size },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.volumeData, "size", $event.target.value)
+            }
+          }
+        })
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "form-group" }, [
+      _vm._v(_vm._s(this.totalGBLeft + " GB available"))
     ]),
     _vm._v(" "),
     _c("br"),
@@ -39419,7 +39239,7 @@ var render = function() {
           on: {
             click: function($event) {
               $event.preventDefault()
-              return _vm.createVolume($event)
+              return _vm.createVolume()
             }
           }
         },
@@ -56871,6 +56691,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     url: "http://134.122.49.176",
+    //url: "http://192.168.1.132",
     token: "",
     user: null,
     userID: null,
