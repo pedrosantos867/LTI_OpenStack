@@ -1899,10 +1899,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createInstance.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/createInstance.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createImage.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/createImage.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1928,6 +1928,73 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      error: null,
+      name: "",
+      imageID: null,
+      image: null
+    };
+  },
+  methods: {
+    uploadImage: function uploadImage() {
+      var _this = this;
+
+      //create Image to get id
+      var payload_post = {
+        name: this.name,
+        visibility: "shared",
+        container_format: "bare",
+        disk_format: "qcow2"
+      };
+      axios.post(this.$store.state.url + "/image/v2/images", payload_post, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this.imageID = response.data.id;
+        var reader = new FileReader();
+        reader.readAsArrayBuffer(_this.image);
+
+        reader.onload = function (evt) {
+          axios({
+            method: "put",
+            url: _this.$store.state.url + "/image/v2/images/" + _this.imageID + "/file",
+            data: evt.target.result,
+            headers: {
+              "Content-Type": "application/octet-stream",
+              "X-Auth-Token": _this.$store.state.projectScopedToken
+            }
+          }).then(function (response) {
+            if (response.status == 204) {
+              Vue.$toast.open("Image created with success!");
+            }
+          });
+        };
+      });
+    },
+    onFileSelected: function onFileSelected(event) {
+      this.image = event.target.files[0];
+    }
+  },
+  mounted: function mounted() {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createInstance.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/createInstance.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _createVolume__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createVolume */ "./resources/js/components/createVolume.vue");
+/* harmony import */ var _createImage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createImage */ "./resources/js/components/createImage.vue");
 //
 //
 //
@@ -1985,7 +2052,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//import { Socket } from 'dgram';
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1995,25 +2102,20 @@ __webpack_require__.r(__webpack_exports__);
         volume: null,
         image: null,
         description: "",
-        volumeSource: 0
+        bootSource: 0
       },
       flavors: [],
       volumes: [],
       images: [],
-      optionsVolumeSource: [{
+      optionsBootSource: [{
         text: "Image",
         value: 2
       }, {
         text: "Volume",
         value: 3
       }],
-      optionsPayment: [{
-        text: "Bank Transfer",
-        value: "bt"
-      }, {
-        text: "MB Payment",
-        value: "mb"
-      }],
+      createVolume: 0,
+      createImage: 0,
       error: null
     };
   },
@@ -2087,41 +2189,25 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         console.log(response);
-        /*
-          if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-          }
-          */
       });
+    },
+    changeCreateVolume: function changeCreateVolume() {
+      this.createVolume = !this.createVolume;
+      this.volumes = [];
+      this.getVolumes();
+    },
+    changeCreateImage: function changeCreateImage() {
+      this.createImage = !this.createImage;
+      this.images = [];
+      this.getImages();
     },
     goBack: function goBack() {
       this.$router.push("/projectDetails");
     }
-    /*
-    getCategories: function() {
-      axios.get("api/categories/e").then(response => {
-        this.categories = response.data.data;
-      });
-    },
-    createMovement: function() {
-      //   console.log(this.movementData);
-      this.error = null;
-      axios
-        .post("api/movement/create", this.movementData)
-        .then(response => {
-          console.log(response);
-          this.$router.push("/wallet");
-          this.$socket.emit("userUpdated", this.movementData.email);
-        })
-        .catch(err => {
-          this.error = err.response.data.message;
-          console.log(err.response.data);
-        });
-    }
-    */
-
+  },
+  components: {
+    CreateVolume: _createVolume__WEBPACK_IMPORTED_MODULE_0__["default"],
+    CreateImage: _createImage__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   mounted: function mounted() {
     this.getFlavors();
@@ -2190,54 +2276,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //import { Socket } from 'dgram';
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2254,10 +2292,10 @@ __webpack_require__.r(__webpack_exports__);
     getVolumes: function getVolumes() {
       var _this = this;
 
-      axios.get(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', {
+      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         _this.volumes = response.data.volumes; //console.log(this.volumes)
@@ -2278,8 +2316,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createVolume: function createVolume() {
-      var _this3 = this;
-
       var payload = {
         "volume": {
           "size": this.volumeData.size,
@@ -2287,19 +2323,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
       console.log(payload);
-      axios.post(this.$store.state.url + '/volume/v3/' + this.$store.state.currentProjectID + '/volumes', payload, {
+      axios.post(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", payload, {
         headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        if (response.status == 202) {
-          Vue.$toast.open('Volume  ' + _this3.volumeData.name + " criado com sucesso!");
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        } // console.log(response)
 
-          _this3.goBack();
-        }
-
-        console.log(response);
         /*
         if (error.response) {
             console.log(error.response.data);
@@ -2307,34 +2336,43 @@ __webpack_require__.r(__webpack_exports__);
             console.log(error.response.headers);
         }
         */
+
       });
     },
     goBack: function goBack() {
       this.$router.push("/projectDetails");
-    }
-    /*
-    getCategories: function() {
-      axios.get("api/categories/e").then(response => {
-        this.categories = response.data.data;
+    },
+    getCategories: function getCategories() {
+      var _this3 = this;
+
+      axios.get("api/categories/e").then(function (response) {
+        _this3.categories = response.data.data;
       });
     },
-    createMovement: function() {
+    createMovement: function createMovement() {
+      var _this4 = this;
+
       //   console.log(this.movementData);
       this.error = null;
-      axios
-        .post("api/movement/create", this.movementData)
-        .then(response => {
-          console.log(response);
-          this.$router.push("/wallet");
-          this.$socket.emit("userUpdated", this.movementData.email);
-        })
-        .catch(err => {
-          this.error = err.response.data.message;
-          console.log(err.response.data);
-        });
-    }
-    */
+      axios.post(this.$store.state.url + "/compute/v2.1/servers", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        if (response.status == 202) {
+          Vue.$toast.open("Instância " + _this4.instanceData.name + " criada com sucesso!");
 
+          _this4.goBack();
+        }
+      }).then(function (response) {
+        if (response.status == 202) {
+          Vue.$toast.open("Volume " + _this4.volumeData.name + " created with success!");
+        }
+
+        console.log(response);
+      });
+    }
   },
   mounted: function mounted() {
     this.getGBAvailable();
@@ -38937,6 +38975,87 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createImage.vue?vue&type=template&id=cb46bd78&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/createImage.vue?vue&type=template&id=cb46bd78& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("form", { attrs: { enctype: "multipart/form-data" } }, [
+    _c("div", [
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { attrs: { for: "name" } }, [
+          _vm._v("Name of the new image")
+        ]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.name,
+              expression: "name"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text", name: "name", id: "name" },
+          domProps: { value: _vm.name },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.name = $event.target.value
+            }
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { attrs: { for: "file" } }, [_vm._v("Choose a file")]),
+        _vm._v(" "),
+        _c("input", {
+          staticClass: "form-control-file",
+          attrs: { type: "file", id: "file", multiple: "" },
+          on: { change: _vm.onFileSelected }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.uploadImage($event)
+              }
+            }
+          },
+          [_vm._v("Create image")]
+        )
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createInstance.vue?vue&type=template&id=03a04c3c&":
 /*!*****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/createInstance.vue?vue&type=template&id=03a04c3c& ***!
@@ -38952,297 +39071,338 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", [
-      _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
+  return _c(
+    "div",
+    [
+      _vm._m(0),
       _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.instanceData.name,
-            expression: "instanceData.name"
-          }
-        ],
-        staticClass: "form-control",
-        attrs: { type: "text", name: "name", id: "name" },
-        domProps: { value: _vm.instanceData.name },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+      _c("div", [
+        _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.instanceData.name,
+              expression: "instanceData.name"
             }
-            _vm.$set(_vm.instanceData, "name", $event.target.value)
-          }
-        }
-      })
-    ]),
-    _vm._v(" "),
-    _c("div", [
-      _c("label", { attrs: { for: "description" } }, [_vm._v("Description")]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.instanceData.description,
-            expression: "instanceData.description"
-          }
-        ],
-        staticClass: "form-control",
-        attrs: { type: "text", name: "description", id: "description" },
-        domProps: { value: _vm.instanceData.description },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text", name: "name", id: "name" },
+          domProps: { value: _vm.instanceData.name },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.instanceData, "name", $event.target.value)
             }
-            _vm.$set(_vm.instanceData, "description", $event.target.value)
           }
-        }
-      })
-    ]),
-    _vm._v(" "),
-    _c("div", [
-      _c("label", { attrs: { for: "volumeSource" } }, [
-        _vm._v("Volume source")
+        })
       ]),
       _vm._v(" "),
-      _c(
-        "select",
-        {
+      _c("div", [
+        _c("label", { attrs: { for: "description" } }, [_vm._v("Description")]),
+        _vm._v(" "),
+        _c("input", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.instanceData.volumeSource,
-              expression: "instanceData.volumeSource"
+              value: _vm.instanceData.description,
+              expression: "instanceData.description"
             }
           ],
           staticClass: "form-control",
-          attrs: { id: "volumeSource", name: "volumeSource" },
+          attrs: { type: "text", name: "description", id: "description" },
+          domProps: { value: _vm.instanceData.description },
           on: {
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.$set(
-                _vm.instanceData,
-                "volumeSource",
-                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-              )
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.instanceData, "description", $event.target.value)
             }
           }
-        },
-        _vm._l(_vm.optionsVolumeSource, function(option) {
-          return _c(
-            "option",
-            { key: option.value, domProps: { value: option.value } },
-            [_vm._v(_vm._s(option.text))]
-          )
-        }),
-        0
-      )
-    ]),
-    _vm._v(" "),
-    _vm.instanceData.volumeSource == 2
-      ? _c("div", [
-          _c("div", [
-            _c("label", { attrs: { for: "image" } }, [_vm._v("Image")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.instanceData.image,
-                    expression: "instanceData.image"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { id: "image", name: "image" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.instanceData,
-                      "image",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              _vm._l(_vm.images, function(option) {
-                return _c(
-                  "option",
-                  { key: option.id, domProps: { value: option.id } },
-                  [_vm._v(_vm._s(option.name))]
-                )
-              }),
-              0
-            )
-          ])
-        ])
-      : _vm.instanceData.volumeSource == 3
-      ? _c("div", [
-          _c("div", [
-            _c("label", { attrs: { for: "volume" } }, [_vm._v("Volume")]),
-            _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.instanceData.volume,
-                    expression: "instanceData.volume"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { id: "volume", name: "volume" },
-                on: {
-                  change: function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.$set(
-                      _vm.instanceData,
-                      "volume",
-                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                    )
-                  }
-                }
-              },
-              _vm._l(_vm.volumes, function(option) {
-                return _c(
-                  "option",
-                  { key: option.id, domProps: { value: option.id } },
-                  [
-                    option.name
-                      ? _c("div", [_vm._v(_vm._s(option.name))])
-                      : _c("dir", [_vm._v(_vm._s(option.id))])
-                  ],
-                  1
-                )
-              }),
-              0
-            )
-          ])
-        ])
-      : _vm._e(),
-    _vm._v(" "),
-    _c("div", [
-      _c("label", { attrs: { for: "flavor" } }, [_vm._v("Flavor")]),
+        })
+      ]),
       _vm._v(" "),
-      _c(
-        "select",
-        {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.instanceData.flavorID,
-              expression: "instanceData.flavorID"
+      _c("div", [
+        _c("label", { attrs: { for: "bootSource" } }, [_vm._v("Boot source")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.instanceData.bootSource,
+                expression: "instanceData.bootSource"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { id: "bootSource", name: "bootSource" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.instanceData,
+                  "bootSource",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
             }
-          ],
-          staticClass: "form-control",
-          attrs: { id: "flavor", name: "flavor" },
-          on: {
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.$set(
-                _vm.instanceData,
-                "flavorID",
-                $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-              )
-            }
-          }
-        },
-        _vm._l(_vm.flavors, function(option) {
-          return _c(
-            "option",
-            { key: option.id, domProps: { value: option.id } },
-            [_vm._v(_vm._s(option.name))]
-          )
-        }),
-        0
-      )
-    ]),
-    _vm._v(" "),
-    _c("br"),
-    _vm._v(" "),
-    _vm.error
-      ? _c(
-          "div",
-          { staticClass: "alert alert-danger", attrs: { role: "alert" } },
-          [_vm._v(_vm._s(_vm.error))]
+          },
+          _vm._l(_vm.optionsBootSource, function(option) {
+            return _c(
+              "option",
+              { key: option.value, domProps: { value: option.value } },
+              [_vm._v(_vm._s(option.text))]
+            )
+          }),
+          0
         )
-      : _vm._e(),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-primary",
-          attrs: { type: "button" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              return _vm.createInstance($event)
-            }
-          }
-        },
-        [_vm._v("Create")]
-      ),
+      ]),
       _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-danger",
-          attrs: { type: "button" },
-          on: {
-            click: function($event) {
-              return _vm.goBack()
+      _vm.instanceData.bootSource == 2
+        ? _c("div", [
+            _c("div", [
+              _c("label", { attrs: { for: "image" } }, [_vm._v("Image")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.instanceData.image,
+                      expression: "instanceData.image"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { id: "image", name: "image" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.instanceData,
+                        "image",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                _vm._l(_vm.images, function(option) {
+                  return _c(
+                    "option",
+                    { key: option.id, domProps: { value: option.id } },
+                    [_vm._v(_vm._s(option.name))]
+                  )
+                }),
+                0
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.changeCreateImage($event)
+                    }
+                  }
+                },
+                [_vm._v("Open/close menu to create a new image")]
+              )
+            ])
+          ])
+        : _vm.instanceData.bootSource == 3
+        ? _c("div", [
+            _c("div", [
+              _c("label", { attrs: { for: "volume" } }, [
+                _vm._v("Choose a volume")
+              ]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.instanceData.volume,
+                      expression: "instanceData.volume"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { id: "volume", name: "volume" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.instanceData,
+                        "volume",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                _vm._l(_vm.volumes, function(option) {
+                  return _c(
+                    "option",
+                    { key: option.id, domProps: { value: option.id } },
+                    [
+                      option.name
+                        ? _c("div", [_vm._v(_vm._s(option.name))])
+                        : _c("dir", [_vm._v(_vm._s(option.id))])
+                    ],
+                    1
+                  )
+                }),
+                0
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: { click: _vm.changeCreateVolume }
+                },
+                [_vm._v("Open/close menu to create a new volume")]
+              )
+            ])
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.createVolume ? _c("create-volume") : _vm._e(),
+      _vm._v(" "),
+      _vm.createImage ? _c("create-image") : _vm._e(),
+      _vm._v(" "),
+      _c("div", [
+        _c("label", { attrs: { for: "flavor" } }, [_vm._v("Flavor")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.instanceData.flavorID,
+                expression: "instanceData.flavorID"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { id: "flavor", name: "flavor" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.instanceData,
+                  "flavorID",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
             }
-          }
-        },
-        [_vm._v("Cancel")]
-      )
-    ])
-  ])
+          },
+          _vm._l(_vm.flavors, function(option) {
+            return _c(
+              "option",
+              { key: option.id, domProps: { value: option.id } },
+              [_vm._v(_vm._s(option.name))]
+            )
+          }),
+          0
+        )
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _vm.error
+        ? _c(
+            "div",
+            { staticClass: "alert alert-danger", attrs: { role: "alert" } },
+            [_vm._v(_vm._s(_vm.error))]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.createInstance($event)
+              }
+            }
+          },
+          [_vm._v("Create")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-danger",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.goBack()
+              }
+            }
+          },
+          [_vm._v("Cancel")]
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -56319,6 +56479,75 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/createImage.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/createImage.vue ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _createImage_vue_vue_type_template_id_cb46bd78___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createImage.vue?vue&type=template&id=cb46bd78& */ "./resources/js/components/createImage.vue?vue&type=template&id=cb46bd78&");
+/* harmony import */ var _createImage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createImage.vue?vue&type=script&lang=js& */ "./resources/js/components/createImage.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _createImage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _createImage_vue_vue_type_template_id_cb46bd78___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _createImage_vue_vue_type_template_id_cb46bd78___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/createImage.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/createImage.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/createImage.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_createImage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./createImage.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createImage.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_createImage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/createImage.vue?vue&type=template&id=cb46bd78&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/createImage.vue?vue&type=template&id=cb46bd78& ***!
+  \********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_createImage_vue_vue_type_template_id_cb46bd78___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./createImage.vue?vue&type=template&id=cb46bd78& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/createImage.vue?vue&type=template&id=cb46bd78&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_createImage_vue_vue_type_template_id_cb46bd78___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_createImage_vue_vue_type_template_id_cb46bd78___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 

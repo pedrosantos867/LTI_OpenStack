@@ -3,10 +3,12 @@
     <div class="jumbotron">
       <h1>Create Instance</h1>
     </div>
+
     <div>
       <label for="name">Name</label>
       <input type="text" class="form-control" name="name" id="name" v-model="instanceData.name" />
     </div>
+
     <div>
       <label for="description">Description</label>
       <input
@@ -19,32 +21,39 @@
     </div>
 
     <div>
-      <label for="volumeSource">Volume source</label>
+      <label for="bootSource">Boot source</label>
       <select
         class="form-control"
-        id="volumeSource"
-        name="volumeSource"
-        v-model="instanceData.volumeSource"
+        id="bootSource"
+        name="bootSource"
+        v-model="instanceData.bootSource"
       >
         <option
-          v-for="option in optionsVolumeSource"
+          v-for="option in optionsBootSource"
           :key="option.value"
           v-bind:value="option.value"
         >{{ option.text }}</option>
       </select>
     </div>
 
-    <div v-if="instanceData.volumeSource == 2">
+    <div v-if="instanceData.bootSource == 2">
       <div>
         <label for="image">Image</label>
         <select class="form-control" id="image" name="image" v-model="instanceData.image">
           <option v-for="option in images" :key="option.id" v-bind:value="option.id">{{option.name}}</option>
         </select>
       </div>
-    </div>
-    <div v-else-if="instanceData.volumeSource == 3">
       <div>
-        <label for="volume">Volume</label>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-on:click.prevent="changeCreateImage"
+        >Open/close menu to create a new image</button>
+      </div>
+    </div>
+    <div v-else-if="instanceData.bootSource == 3">
+      <div>
+        <label for="volume">Choose a volume</label>
         <select class="form-control" id="volume" name="volume" v-model="instanceData.volume">
           <option v-for="option in volumes" :key="option.id" v-bind:value="option.id">
             <div v-if="option.name">{{ option.name }}</div>
@@ -52,7 +61,17 @@
           </option>
         </select>
       </div>
+      <div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-on:click="changeCreateVolume"
+        >Open/close menu to create a new volume</button>
+      </div>
     </div>
+
+    <create-volume v-if="createVolume"></create-volume>
+    <create-image v-if="createImage"></create-image>
 
     <div>
       <label for="flavor">Flavor</label>
@@ -76,7 +95,9 @@
 </template>
 
 <script>
-//import { Socket } from 'dgram';
+import CreateVolume from "./createVolume";
+import CreateImage from "./createImage";
+
 export default {
   data() {
     return {
@@ -86,19 +107,17 @@ export default {
         volume: null,
         image: null,
         description: "",
-        volumeSource: 0
+        bootSource: 0
       },
       flavors: [],
       volumes: [],
       images: [],
-      optionsVolumeSource: [
+      optionsBootSource: [
         { text: "Image", value: 2 },
         { text: "Volume", value: 3 }
       ],
-      optionsPayment: [
-        { text: "Bank Transfer", value: "bt" },
-        { text: "MB Payment", value: "mb" }
-      ],
+      createVolume: 0,
+      createImage: 0,
       error: null
     };
   },
@@ -174,49 +193,33 @@ export default {
           }
         })
         .then(response => {
-          console.dir(response)
+          console.dir(response);
           if (response.status == 202) {
             Vue.$toast.open(
               "Instância " + this.instanceData.name + " criada com sucesso!"
             );
             this.goBack();
           }
-
           console.log(response);
-          /*
-            if (error.response) {
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            }
-            */
         });
+    },
+    changeCreateVolume: function() {
+      this.createVolume = !this.createVolume;
+      this.volumes = [];
+      this.getVolumes();
+    },
+    changeCreateImage: function() {
+      this.createImage = !this.createImage;
+      this.images = [];
+      this.getImages();
     },
     goBack: function() {
       this.$router.push("/projectDetails");
     }
-    /*
-    getCategories: function() {
-      axios.get("api/categories/e").then(response => {
-        this.categories = response.data.data;
-      });
-    },
-    createMovement: function() {
-      //   console.log(this.movementData);
-      this.error = null;
-      axios
-        .post("api/movement/create", this.movementData)
-        .then(response => {
-          console.log(response);
-          this.$router.push("/wallet");
-          this.$socket.emit("userUpdated", this.movementData.email);
-        })
-        .catch(err => {
-          this.error = err.response.data.message;
-          console.log(err.response.data);
-        });
-    }
-    */
+  },
+  components: {
+    CreateVolume,
+    CreateImage
   },
   mounted() {
     this.getFlavors();
