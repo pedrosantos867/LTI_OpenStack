@@ -78,16 +78,6 @@
                 >Editar</button>
                 <button
                   type="button"
-                  class="btn btn-sm btn-primary"
-                  v-on:click="getVolumes()"
-                >Get volumes</button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-primary"
-                  v-on:click="getInstanceData(instance)"
-                >Get data</button>
-                <button
-                  type="button"
                   class="btn btn-sm btn-danger"
                   v-on:click="removeInstance(instance)"
                 >Remover</button>

@@ -5,7 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        url: "http://134.122.49.176",
+        //url: "http://134.122.49.176",
+        url: "http://192.168.1.132",
         token: "",
         user: null,
         userID: null,
