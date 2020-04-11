@@ -13,7 +13,7 @@ import Logout from './components/logout'
 import ProjectsList from './components/projectsList'
 import ProjectDetails from './components/projectDetails'
 import CreateInstance from './components/createInstance'
-import CreateVolume from './components/createVolume'
+import EditInstance from './components/editInstance'
 
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-default.css';
@@ -31,9 +31,9 @@ const routes = [
     { path: '/projectsList', component: ProjectsList },   
     { path: '/projectDetails', component: ProjectDetails },
     { path: '/createInstance', component: CreateInstance },
-    { path: '/createVolume', component: CreateVolume }
-]
+    { path: '/editInstance', component: EditInstance },
 
+]
 const router = new VueRouter({
     //mode: 'history',
     routes

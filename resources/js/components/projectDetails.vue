@@ -141,7 +141,9 @@ export default {
     goBack: function() {
       this.$router.push("/projectsList");
     },
-    editInstance: function(instance) {},
+    editInstance: function(instance) {
+      this.$router.push("/editInstance");
+    },
     getInstanceData: function(instance) {
       console.log(instance);
     },
