@@ -13,7 +13,8 @@ export default new Vuex.Store({
         currentProjectName: "",
         currentProjectID: null,
         projectScopedToken: "",
-        userPassword: null
+        userPassword: null,
+        currentInstance: null
     },
     mutations: {//synch
         
@@ -32,6 +33,10 @@ export default new Vuex.Store({
             state.projectScopedToken = "";
             sessionStorage.removeItem('projectScopedToken');
             axios.defaults.headers.common.Authorization = undefined;
+        },
+        setCurrentInstance: (state, id) => {
+            state.currentInstance = id;
+            sessionStorage.setItem('currentInstance', id);
         },
         clearToken: (state) => {
             state.token = "";

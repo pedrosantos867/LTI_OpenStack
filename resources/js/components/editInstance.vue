@@ -6,7 +6,7 @@
 
     <div>
       <label for="name">Name</label>
-      <input type="text" class="form-control" name="name" id="name" v-model="instanceData.name" />
+      <input type="text" class="form-control" name="name" id="name" v-model="name" />
     </div>
 
     <div>
@@ -16,180 +16,83 @@
         class="form-control"
         name="description"
         id="description"
-        v-model="instanceData.description"
+        v-model="description"
       />
-    </div>
-
-    <div v-if="instanceData.bootSource == 2">
-      <div>
-        <label for="image">Image</label>
-        <select class="form-control" id="image" name="image" v-model="instanceData.image">
-          <option v-for="option in images" :key="option.id" v-bind:value="option.id">{{option.name}}</option>
-        </select>
-      </div>
-      <div>
-        <button
-          type="button"
-          class="btn btn-primary"
-          v-on:click.prevent="changeCreateImage"
-        >Open/close menu to create a new image</button>
-      </div>
-    </div>
-    <create-image v-if="createImage"></create-image>
-
-    <div>
-      <label for="flavor">Flavor</label>
-      <select class="form-control" id="flavor" name="flavor" v-model="instanceData.flavorID">
-        <option
-          v-for="option in flavors"
-          :key="option.id"
-          v-bind:value="option.id"
-        >{{ option.name }}</option>
-      </select>
     </div>
 
     <br />
     <div v-if="error" class="alert alert-danger" role="alert">{{error}}</div>
     <hr />
     <div>
-      <button type="button" class="btn btn-primary" v-on:click.prevent="createInstance">Create</button>
+      <button type="button" class="btn btn-primary" v-on:click.prevent="edit">Edit</button>
       <button type="button" class="btn btn-danger" v-on:click="goBack()">Cancel</button>
     </div>
   </div>
 </template>
 
 <script>
-import CreateVolume from "./createVolume";
-import CreateImage from "./createImage";
-
 export default {
   data() {
     return {
-      instanceData: {
-        name: "",
-        flavorID: null,
-        volume: null,
-        image: null,
-        description: "",
-        bootSource: 0
-      },
-      flavors: [],
-      volumes: [],
-      images: [],
-      optionsBootSource: [
-        { text: "Image", value: 2 },
-        { text: "Volume", value: 3 }
-      ],
-      createVolume: 0,
-      createImage: 0,
+      name: "",
+      description: "",
       error: null
     };
   },
   methods: {
-    getFlavors: function() {
-      console.log(this.$store.state.projectScopedToken);
+    edit() {
+      let payload = {
+        server: {}
+      };
+
+      if (this.name) {
+        payload.server.name = this.name;
+      }
+
+      if (this.description) {
+        payload.server.description = this.description;
+      }
+
       axios
-        .get(this.$store.state.url + "/compute/v2.1/flavors", {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Auth-Token": this.$store.state.projectScopedToken
-          }
-        })
-        .then(response => {
-          this.flavors = response.data.flavors;
-          //console.log(this.flavors)
-        });
-    },
-    getVolumes: function() {
-      axios
-        .get(
+        .put(
           this.$store.state.url +
-            "/volume/v3/" +
-            this.$store.state.currentProjectID +
-            "/volumes",
+            "/compute/v2.1/servers/" +
+            this.$store.state.currentInstance,
+          payload,
           {
             headers: {
               "Content-Type": "application/json",
-              "X-Auth-Token": this.$store.state.projectScopedToken
+              "X-Auth-Token": this.$store.state.projectScopedToken,
+              "X-OpenStack-Nova-API-Version": "2.19"
             }
           }
         )
         .then(response => {
-          this.volumes = response.data.volumes;
-          //console.log(this.volumes)
-        });
-    },
-    getImages: function() {
-      axios
-        .get(this.$store.state.url + "/compute/v2.1/images", {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Auth-Token": this.$store.state.projectScopedToken
-          }
-        })
-        .then(response => {
-          this.images = response.data.images;
-          //console.log(this.images)
-        });
-    },
-    createInstance: function() {
-      let payload = {
-        server: {
-          name: this.instanceData.name,
-          imageRef: this.instanceData.image,
-          flavorRef: this.instanceData.flavorID,
-          description: this.instanceData.description,
-          networks: [
-            {
-              uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
-            }
-          ]
-        }
-      };
-      //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
-      console.log(payload);
-      axios
-        .post(this.$store.state.url + "/compute/v2.1/servers", payload, {
-          headers: {
-            "Content-Type": "application/json",
-            "X-OpenStack-Nova-API-Version": "2.19",
-            "X-Auth-Token": this.$store.state.projectScopedToken
-          }
-        })
-        .then(response => {
-          console.dir(response);
-          if (response.status == 202) {
-            Vue.$toast.open(
-              "Instância " + this.instanceData.name + " criada com sucesso!"
+          if(response.status == 200){
+             Vue.$toast.open(
+              "Alterações efetuadas com sucesso!"
             );
-            this.goBack();
+            this.goBack()
           }
-          console.log(response);
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log("Error", error.message);
+          }
+          console.log(error.config);
         });
-    },
-    changeCreateVolume: function() {
-      this.createVolume = !this.createVolume;
-      this.volumes = [];
-      this.getVolumes();
-    },
-    changeCreateImage: function() {
-      this.createImage = !this.createImage;
-      this.images = [];
-      this.getImages();
     },
     goBack: function() {
       this.$router.push("/projectDetails");
     }
   },
-  components: {
-    CreateVolume,
-    CreateImage
-  },
-  mounted() {
-    this.getFlavors();
-    this.getVolumes();
-    this.getImages();
-  }
+  mounted() {}
 };
 </script>
 

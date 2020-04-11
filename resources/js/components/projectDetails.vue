@@ -36,7 +36,9 @@
               <div v-if="instance.description">
                 <td>{{ instance.description }}</td>
               </div>
-              <div v-else><td>{{ "No description" }}</td></div>
+              <div v-else>
+                <td>{{ "No description" }}</td>
+              </div>
 
               <td v-if="instance.image.id == null">Boot from volume</td>
               <td v-else>{{ verificarImage(instance.image.id) }}</td>
@@ -132,6 +134,7 @@ export default {
       this.$router.push("/projectsList");
     },
     editInstance: function(instance) {
+      this.$store.commit("setCurrentInstance", instance.id);
       this.$router.push("/editInstance");
     },
     getInstanceData: function(instance) {

@@ -38,7 +38,7 @@ const routes = [
     { path: '/createVolume', component: CreateVolume },
     { path: '/projectEdit', component: ProjectEdit },
     { path: '/createProject', component: CreateProject },
-    { path: '/editInstance', component: EditInstance },
+    { path: '/editInstance', component: EditInstance},
 
 ]
 const router = new VueRouter({

@@ -2557,8 +2557,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _createVolume__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createVolume */ "./resources/js/components/createVolume.vue");
-/* harmony import */ var _createImage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./createImage */ "./resources/js/components/createImage.vue");
 //
 //
 //
@@ -2591,157 +2589,61 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      instanceData: {
-        name: "",
-        flavorID: null,
-        volume: null,
-        image: null,
-        description: "",
-        bootSource: 0
-      },
-      flavors: [],
-      volumes: [],
-      images: [],
-      optionsBootSource: [{
-        text: "Image",
-        value: 2
-      }, {
-        text: "Volume",
-        value: 3
-      }],
-      createVolume: 0,
-      createImage: 0,
+      name: "",
+      description: "",
       error: null
     };
   },
   methods: {
-    getFlavors: function getFlavors() {
+    edit: function edit() {
       var _this = this;
 
-      console.log(this.$store.state.projectScopedToken);
-      axios.get(this.$store.state.url + "/compute/v2.1/flavors", {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        _this.flavors = response.data.flavors; //console.log(this.flavors)
-      });
-    },
-    getVolumes: function getVolumes() {
-      var _this2 = this;
-
-      axios.get(this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        _this2.volumes = response.data.volumes; //console.log(this.volumes)
-      });
-    },
-    getImages: function getImages() {
-      var _this3 = this;
-
-      axios.get(this.$store.state.url + "/compute/v2.1/images", {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": this.$store.state.projectScopedToken
-        }
-      }).then(function (response) {
-        _this3.images = response.data.images; //console.log(this.images)
-      });
-    },
-    createInstance: function createInstance() {
-      var _this4 = this;
-
       var payload = {
-        server: {
-          name: this.instanceData.name,
-          imageRef: this.instanceData.image,
-          flavorRef: this.instanceData.flavorID,
-          description: this.instanceData.description,
-          networks: [{
-            uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
-          }]
-        }
-      }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
+        server: {}
+      };
 
-      console.log(payload);
-      axios.post(this.$store.state.url + "/compute/v2.1/servers", payload, {
+      if (this.name) {
+        payload.server.name = this.name;
+      }
+
+      if (this.description) {
+        payload.server.description = this.description;
+      }
+
+      axios.put(this.$store.state.url + "/compute/v2.1/servers/" + this.$store.state.currentInstance, payload, {
         headers: {
           "Content-Type": "application/json",
-          "X-OpenStack-Nova-API-Version": "2.19",
-          "X-Auth-Token": this.$store.state.projectScopedToken
+          "X-Auth-Token": this.$store.state.projectScopedToken,
+          "X-OpenStack-Nova-API-Version": "2.19"
         }
       }).then(function (response) {
-        console.dir(response);
+        if (response.status == 200) {
+          Vue.$toast.open("Alterações efetuadas com sucesso!");
 
-        if (response.status == 202) {
-          Vue.$toast.open("Instância " + _this4.instanceData.name + " criada com sucesso!");
-
-          _this4.goBack();
+          _this.goBack();
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
         }
 
-        console.log(response);
+        console.log(error.config);
       });
-    },
-    changeCreateVolume: function changeCreateVolume() {
-      this.createVolume = !this.createVolume;
-      this.volumes = [];
-      this.getVolumes();
-    },
-    changeCreateImage: function changeCreateImage() {
-      this.createImage = !this.createImage;
-      this.images = [];
-      this.getImages();
     },
     goBack: function goBack() {
       this.$router.push("/projectDetails");
     }
   },
-  components: {
-    CreateVolume: _createVolume__WEBPACK_IMPORTED_MODULE_0__["default"],
-    CreateImage: _createImage__WEBPACK_IMPORTED_MODULE_1__["default"]
-  },
-  mounted: function mounted() {
-    this.getFlavors();
-    this.getVolumes();
-    this.getImages();
-  }
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -3040,6 +2942,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3073,6 +2977,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$router.push("/projectsList");
     },
     editInstance: function editInstance(instance) {
+      this.$store.commit("setCurrentInstance", instance.id);
       this.$router.push("/editInstance");
     },
     getInstanceData: function getInstanceData(instance) {
@@ -40264,223 +40169,104 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _vm._m(0),
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
       _vm._v(" "),
-      _c("div", [
-        _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.instanceData.name,
-              expression: "instanceData.name"
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.name,
+            expression: "name"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text", name: "name", id: "name" },
+        domProps: { value: _vm.name },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
             }
-          ],
-          staticClass: "form-control",
-          attrs: { type: "text", name: "name", id: "name" },
-          domProps: { value: _vm.instanceData.name },
+            _vm.name = $event.target.value
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c("label", { attrs: { for: "description" } }, [_vm._v("Description")]),
+      _vm._v(" "),
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.description,
+            expression: "description"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text", name: "description", id: "description" },
+        domProps: { value: _vm.description },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.description = $event.target.value
+          }
+        }
+      })
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _vm.error
+      ? _c(
+          "div",
+          { staticClass: "alert alert-danger", attrs: { role: "alert" } },
+          [_vm._v(_vm._s(_vm.error))]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary",
+          attrs: { type: "button" },
           on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.instanceData, "name", $event.target.value)
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.edit($event)
             }
           }
-        })
-      ]),
+        },
+        [_vm._v("Edit")]
+      ),
       _vm._v(" "),
-      _c("div", [
-        _c("label", { attrs: { for: "description" } }, [_vm._v("Description")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.instanceData.description,
-              expression: "instanceData.description"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { type: "text", name: "description", id: "description" },
-          domProps: { value: _vm.instanceData.description },
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          attrs: { type: "button" },
           on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.instanceData, "description", $event.target.value)
+            click: function($event) {
+              return _vm.goBack()
             }
           }
-        })
-      ]),
-      _vm._v(" "),
-      _vm.instanceData.bootSource == 2
-        ? _c("div", [
-            _c("div", [
-              _c("label", { attrs: { for: "image" } }, [_vm._v("Image")]),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.instanceData.image,
-                      expression: "instanceData.image"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { id: "image", name: "image" },
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.$set(
-                        _vm.instanceData,
-                        "image",
-                        $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      )
-                    }
-                  }
-                },
-                _vm._l(_vm.images, function(option) {
-                  return _c(
-                    "option",
-                    { key: option.id, domProps: { value: option.id } },
-                    [_vm._v(_vm._s(option.name))]
-                  )
-                }),
-                0
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary",
-                  attrs: { type: "button" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.changeCreateImage($event)
-                    }
-                  }
-                },
-                [_vm._v("Open/close menu to create a new image")]
-              )
-            ])
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.createImage ? _c("create-image") : _vm._e(),
-      _vm._v(" "),
-      _c("div", [
-        _c("label", { attrs: { for: "flavor" } }, [_vm._v("Flavor")]),
-        _vm._v(" "),
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.instanceData.flavorID,
-                expression: "instanceData.flavorID"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { id: "flavor", name: "flavor" },
-            on: {
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.$set(
-                  _vm.instanceData,
-                  "flavorID",
-                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
-                )
-              }
-            }
-          },
-          _vm._l(_vm.flavors, function(option) {
-            return _c(
-              "option",
-              { key: option.id, domProps: { value: option.id } },
-              [_vm._v(_vm._s(option.name))]
-            )
-          }),
-          0
-        )
-      ]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _vm.error
-        ? _c(
-            "div",
-            { staticClass: "alert alert-danger", attrs: { role: "alert" } },
-            [_vm._v(_vm._s(_vm.error))]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("div", [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary",
-            attrs: { type: "button" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.createInstance($event)
-              }
-            }
-          },
-          [_vm._v("Create")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-danger",
-            attrs: { type: "button" },
-            on: {
-              click: function($event) {
-                return _vm.goBack()
-              }
-            }
-          },
-          [_vm._v("Cancel")]
-        )
-      ])
-    ],
-    1
-  )
+        },
+        [_vm._v("Cancel")]
+      )
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
@@ -58349,7 +58135,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     currentProjectName: "",
     currentProjectID: null,
     projectScopedToken: "",
-    userPassword: null
+    userPassword: null,
+    currentInstance: null
   },
   mutations: {
     //synch
@@ -58368,6 +58155,10 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
       state.projectScopedToken = "";
       sessionStorage.removeItem('projectScopedToken');
       axios.defaults.headers.common.Authorization = undefined;
+    },
+    setCurrentInstance: function setCurrentInstance(state, id) {
+      state.currentInstance = id;
+      sessionStorage.setItem('currentInstance', id);
     },
     clearToken: function clearToken(state) {
       state.token = "";
