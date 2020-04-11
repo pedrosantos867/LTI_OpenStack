@@ -2305,6 +2305,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2363,7 +2366,7 @@ __webpack_require__.r(__webpack_exports__);
           var payload_new_project = {
             project: {
               name: _this.projectName,
-              description: _this.description
+              description: _this.projectDescription
             }
           };
           console.log("4");
@@ -2386,17 +2389,9 @@ __webpack_require__.r(__webpack_exports__);
               _this.showButtonToAddMeAsMember = true;
             }
           })["catch"](function (error) {
-            if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            } else if (error.request) {
-              console.log(error.request);
-            } else {
-              console.log("Error", error.message);
+            if (error.response.status == 409) {
+              Vue.$toast.open("It is not permitted to have two projects with the same name!");
             }
-
-            console.log(error.config);
           });
         });
       });

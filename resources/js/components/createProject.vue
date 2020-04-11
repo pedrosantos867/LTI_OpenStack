@@ -25,7 +25,10 @@
     </div>
     <br />
     <div v-if="showButtonToAddMeAsMember">
-      <button class="btn btn-primary" v-on:click="setMember()">Set me as administrator of this project</button>
+      <button
+        class="btn btn-primary"
+        v-on:click="setMember()"
+      >Set me as administrator of this project</button>
       <button class="btn btn-primary" v-on:click="goBack()">Go to projects list</button>
     </div>
     <br />
@@ -109,7 +112,7 @@ export default {
               let payload_new_project = {
                 project: {
                   name: this.projectName,
-                  description: this.description
+                  description: this.projectDescription
                 }
               };
               console.log("4");
@@ -145,16 +148,11 @@ export default {
                   }
                 })
                 .catch(error => {
-                  if (error.response) {
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                  } else if (error.request) {
-                    console.log(error.request);
-                  } else {
-                    console.log("Error", error.message);
+                  if(error.response.status == 409){
+                    Vue.$toast.open(
+                      "It is not permitted to have two projects with the same name!"
+                    );
                   }
-                  console.log(error.config);
                 });
             });
         });
@@ -177,7 +175,15 @@ export default {
           this.roleIDofAdmin = response.data.roles[0].id;
           console.log("this.roleIDofAdmin: " + this.roleIDofAdmin);
 
-          console.log(this.$store.state.currentProjectID + " " + this.$store.state.userID + " " + this.roleIDofAdmin + " " + this.$store.state.projectScopedToken)
+          console.log(
+            this.$store.state.currentProjectID +
+              " " +
+              this.$store.state.userID +
+              " " +
+              this.roleIDofAdmin +
+              " " +
+              this.$store.state.projectScopedToken
+          );
           axios
             .put(
               this.$store.state.url +
@@ -195,11 +201,9 @@ export default {
               }
             )
             .then(response => {
-              if(response.status == 204){
-                Vue.$toast.open(
-                  "You changed you role sucessufully!"
-                );
-                this.goBack()
+              if (response.status == 204) {
+                Vue.$toast.open("You changed you role sucessufully!");
+                this.goBack();
               }
             });
         });
