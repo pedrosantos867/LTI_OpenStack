@@ -224,6 +224,19 @@ export default {
             this.goBack();
           }
           console.log(response);
+        })
+        .catch(error => {
+          // Error 😨
+          if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            // Something happened in setting up the request and triggered an Error
+            console.log("Error", error.message);
+          }
         });
     },
     changeCreateVolume: function() {

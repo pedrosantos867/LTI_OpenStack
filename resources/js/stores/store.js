@@ -5,8 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        //url: "http://134.122.49.176",
-        url: "http://192.168.1.132",
+        url: "http://134.122.49.176",
+        //url: "http://192.168.1.132",
         token: "",
         user: null,
         userID: null,
@@ -21,11 +21,17 @@ export default new Vuex.Store({
         setToken: (state, token) => {
             state.token = token;
             sessionStorage.setItem('token', token);
-            axios.defaults.headers.common.Authorization = token;
+            axios.defaults.headers.common['X-Auth-Token'] = token;
         },
         setProjectScopedToken: (state, token) => {
             state.projectScopedToken = token;
             sessionStorage.setItem('projectScopedToken', token);
+            axios.defaults.headers.common['X-Auth-Token'] = token;
+        },
+        clearProjectScopedToken: (state, token) => {
+            state.projectScopedToken = "";
+            sessionStorage.removeItem('projectScopedToken');
+            axios.defaults.headers.common.Authorization = undefined;
         },
         clearToken: (state) => {
             state.token = "";
@@ -54,7 +60,6 @@ export default new Vuex.Store({
             let user = sessionStorage.getItem('user');
             if (token) {
                 state.token = token;
-                axios.defaults.headers.common.Authorization = "Bearer " + token;
             }
             if (user) {
                 state.user = JSON.parse(user);
@@ -71,9 +76,6 @@ export default new Vuex.Store({
         },
         setUserPassword(state, password){
             state.userPassword = password
-        },
-        setProjectScopedToken(state, token){
-            state.projectScopedToken = token
         },
         
     },

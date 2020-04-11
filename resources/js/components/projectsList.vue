@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="initialized">
     <h2>{{ title }}</h2>
     <br />
     <h5>Escolha um dos projetos a baixo</h5>
@@ -15,6 +15,7 @@
           <thead class="thead-dark">
             <tr>
               <th>Name</th>
+              <th>Description</th>
               <th>Actions</th>
               <th></th>
             </tr>
@@ -31,6 +32,7 @@
                   v-on:click="changeProject(project)"
                 >{{ project.name }}</button>
               </td>
+              <td>{{ project.description }}</td>
               <td>
                 <button
                   type="button"
@@ -57,6 +59,7 @@
       <h5>Showing {{ projectList.projects.length }} items</h5>
     </div>
     <br />
+    <button class="btn btn-primary" v-on:click="createProject()">Create new project</button>
   </div>
 </template>
 <script>
@@ -64,12 +67,14 @@ export default {
   data: function() {
     return {
       title: "Lista de Projetos",
+      initialized: false,
       projectList: [],
       tokenProjeto: ""
     };
   },
   methods: {
     getProjects: function() {
+      this.projectList = [];
       axios
         .get(this.$store.state.url + "/identity/v3/auth/projects", {
           headers: {
@@ -79,6 +84,7 @@ export default {
         })
         .then(response => {
           this.projectList = response.data;
+          this.initialized = true;
         });
     },
     changeProject: function(project) {
@@ -168,8 +174,45 @@ export default {
             });
         });
     },
-    updateProject: function(projectID) {
-      Vue.$toast.open("Notificação teste");
+    updateProject: function(project) {
+      this.$store.commit("setCurrentProjectID", project.id);
+      this.$store.commit("setCurrentProjectName", project.name);
+
+      let payload = {
+        auth: {
+          identity: {
+            methods: ["password"],
+            password: {
+              user: {
+                id: this.$store.state.userID,
+                password: this.$store.state.userPassword
+              }
+            }
+          },
+          scope: {
+            project: {
+              id: this.$store.state.currentProjectID
+            }
+          }
+        }
+      };
+      axios
+        .post(this.$store.state.url + "/identity/v3/auth/tokens", payload, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(response => {
+          //Token scoped para o projectID
+          this.$store.commit(
+            "setProjectScopedToken",
+            response.headers["x-subject-token"]
+          );
+          this.$router.push("/projectEdit");
+        });
+    },
+    createProject() {
+      this.$router.push("/createProject");
     }
   },
   mounted() {
