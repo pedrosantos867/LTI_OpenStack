@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="jumbotron">
-      <h1>Create Instance</h1>
-    </div>
-
     <div>
       <label for="name">Name</label>
       <input type="text" class="form-control" name="name" id="name" v-model="instanceData.name" />
@@ -18,6 +14,17 @@
         id="description"
         v-model="instanceData.description"
       />
+    </div>
+
+    <div>
+      <label for="network">Network</label>
+      <select class="form-control" id="network" name="network" v-model="instanceData.networkID">
+        <option
+          v-for="option in networks"
+          :key="option.id"
+          v-bind:value="option.id"
+        >{{ option.name }}</option>
+      </select>
     </div>
 
     <div>
@@ -103,6 +110,7 @@ export default {
     return {
       instanceData: {
         name: "",
+        networkID: null,
         flavorID: null,
         volume: null,
         image: null,
@@ -112,6 +120,7 @@ export default {
       flavors: [],
       volumes: [],
       images: [],
+      networks: [],
       optionsBootSource: [
         { text: "Image", value: 2 },
         { text: "Volume", value: 3 }
@@ -168,6 +177,20 @@ export default {
           //console.log(this.images)
         });
     },
+    getNetworks: function() {
+      axios
+        .get(this.$store.state.url + ":9696/v2.0/networks", {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Auth-Token": this.$store.state.projectScopedToken
+          }
+        })
+        .then(response => {
+          this.networks = response.data.networks;
+          console.log("Networks:");
+          console.log(response);
+        });
+    },
     createInstance: function() {
       let payload = {
         server: {
@@ -177,7 +200,7 @@ export default {
           description: this.instanceData.description,
           networks: [
             {
-              uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
+              uuid: this.instanceData.networkID
             }
           ]
         }
@@ -225,6 +248,7 @@ export default {
     this.getFlavors();
     this.getVolumes();
     this.getImages();
+    this.getNetworks();
   }
 };
 </script>

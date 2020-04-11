@@ -2091,6 +2091,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2098,6 +2105,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       instanceData: {
         name: "",
+        networkID: null,
         flavorID: null,
         volume: null,
         image: null,
@@ -2107,6 +2115,7 @@ __webpack_require__.r(__webpack_exports__);
       flavors: [],
       volumes: [],
       images: [],
+      networks: [],
       optionsBootSource: [{
         text: "Image",
         value: 2
@@ -2157,8 +2166,22 @@ __webpack_require__.r(__webpack_exports__);
         _this3.images = response.data.images; //console.log(this.images)
       });
     },
-    createInstance: function createInstance() {
+    getNetworks: function getNetworks() {
       var _this4 = this;
+
+      axios.get(this.$store.state.url + ":9696/v2.0/networks", {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.projectScopedToken
+        }
+      }).then(function (response) {
+        _this4.networks = response.data.networks;
+        console.log("Networks:");
+        console.log(response);
+      });
+    },
+    createInstance: function createInstance() {
+      var _this5 = this;
 
       var payload = {
         server: {
@@ -2167,7 +2190,7 @@ __webpack_require__.r(__webpack_exports__);
           flavorRef: this.instanceData.flavorID,
           description: this.instanceData.description,
           networks: [{
-            uuid: "1147a077-f1e5-479a-bb81-e56a49438158"
+            uuid: this.instanceData.networkID
           }]
         }
       }; //console.log(this.$store.state.url + '/flavors/' + this.instanceData.flavorRef)
@@ -2183,9 +2206,9 @@ __webpack_require__.r(__webpack_exports__);
         console.dir(response);
 
         if (response.status == 202) {
-          Vue.$toast.open("Instância " + _this4.instanceData.name + " criada com sucesso!");
+          Vue.$toast.open("Instância " + _this5.instanceData.name + " criada com sucesso!");
 
-          _this4.goBack();
+          _this5.goBack();
         }
 
         console.log(response);
@@ -2213,6 +2236,7 @@ __webpack_require__.r(__webpack_exports__);
     this.getFlavors();
     this.getVolumes();
     this.getImages();
+    this.getNetworks();
   }
 });
 
@@ -2227,18 +2251,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -2312,14 +2324,16 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this2.totalGBLeft = response.data.limits.absolute.maxTotalVolumeGigabytes - response.data.limits.absolute.totalGigabytesUsed;
         /*           console.log("Gb left for volumes: " + this.totalGBLeft);
-                  console.log(response); */
+        console.log(response); */
       });
     },
     createVolume: function createVolume() {
+      var _this3 = this;
+
       var payload = {
-        "volume": {
-          "size": this.volumeData.size,
-          "name": this.volumeData.name
+        volume: {
+          size: this.volumeData.size,
+          name: this.volumeData.name
         }
       };
       console.log(payload);
@@ -2327,50 +2341,11 @@ __webpack_require__.r(__webpack_exports__);
         headers: {
           "Content-Type": "application/json",
           "X-Auth-Token": this.$store.state.projectScopedToken
-        } // console.log(response)
-
-        /*
-        if (error.response) {
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        }
-        */
-
-      });
-    },
-    goBack: function goBack() {
-      this.$router.push("/projectDetails");
-    },
-    getCategories: function getCategories() {
-      var _this3 = this;
-
-      axios.get("api/categories/e").then(function (response) {
-        _this3.categories = response.data.data;
-      });
-    },
-    createMovement: function createMovement() {
-      var _this4 = this;
-
-      //   console.log(this.movementData);
-      this.error = null;
-      axios.post(this.$store.state.url + "/compute/v2.1/servers", payload, {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth-Token": this.$store.state.projectScopedToken
         }
       }).then(function (response) {
         if (response.status == 202) {
-          Vue.$toast.open("Instância " + _this4.instanceData.name + " criada com sucesso!");
-
-          _this4.goBack();
+          Vue.$toast.open("Volume " + _this3.volumeData.name + " criado com sucesso!");
         }
-      }).then(function (response) {
-        if (response.status == 202) {
-          Vue.$toast.open("Volume " + _this4.volumeData.name + " created with success!");
-        }
-
-        console.log(response);
       });
     }
   },
@@ -2772,16 +2747,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -39284,8 +39249,6 @@ var render = function() {
   return _c(
     "div",
     [
-      _vm._m(0),
-      _vm._v(" "),
       _c("div", [
         _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
         _vm._v(" "),
@@ -39336,6 +39299,51 @@ var render = function() {
             }
           }
         })
+      ]),
+      _vm._v(" "),
+      _c("div", [
+        _c("label", { attrs: { for: "network" } }, [_vm._v("Network")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.instanceData.networkID,
+                expression: "instanceData.networkID"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { id: "network", name: "network" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.$set(
+                  _vm.instanceData,
+                  "networkID",
+                  $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                )
+              }
+            }
+          },
+          _vm._l(_vm.networks, function(option) {
+            return _c(
+              "option",
+              { key: option.id, domProps: { value: option.id } },
+              [_vm._v(_vm._s(option.name))]
+            )
+          }),
+          0
+        )
       ]),
       _vm._v(" "),
       _c("div", [
@@ -39614,16 +39622,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "jumbotron" }, [
-      _c("h1", [_vm._v("Create Instance")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -39646,8 +39645,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
     _c("div", [
       _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
       _vm._v(" "),
@@ -39686,34 +39683,37 @@ var render = function() {
         "div",
         { staticClass: "input-group themable-spinner spinner-initialized" },
         [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.volumeData.size,
-                expression: "volumeData.size"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "number",
-              name: "size",
-              value: "1",
-              min: "1",
-              required: "",
-              id: "id_size"
-            },
-            domProps: { value: _vm.volumeData.size },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+          _c("div", { staticClass: "form-group row" }, [
+            _c(
+              "label",
+              { staticClass: "col-2 col-form-label", attrs: { for: "size" } },
+              [_vm._v("Size")]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-10" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.volumeData.size,
+                    expression: "volumeData.size"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "number", id: "size" },
+                domProps: { value: _vm.volumeData.size },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.volumeData, "size", $event.target.value)
+                  }
                 }
-                _vm.$set(_vm.volumeData, "size", $event.target.value)
-              }
-            }
-          })
+              })
+            ])
+          ])
         ]
       ),
       _vm._v(" "),
@@ -39766,16 +39766,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "jumbotron" }, [
-      _c("h1", [_vm._v("Create Volume")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -40382,34 +40373,6 @@ var render = function() {
                           }
                         },
                         [_vm._v("Editar")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-sm btn-primary",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.getVolumes()
-                            }
-                          }
-                        },
-                        [_vm._v("Get volumes")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-sm btn-primary",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.getInstanceData(instance)
-                            }
-                          }
-                        },
-                        [_vm._v("Get data")]
                       ),
                       _vm._v(" "),
                       _c(
@@ -57619,7 +57582,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
-    url: "http://134.122.49.176",
+    //url: "http://134.122.49.176",
+    url: "http://192.168.1.132",
     token: "",
     user: null,
     userID: null,
@@ -57714,8 +57678,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
