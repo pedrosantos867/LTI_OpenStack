@@ -18,6 +18,7 @@ import ProjectEdit from './components/projectEdit'
 import CreateProject from './components/createProject'
 
 import EditInstance from './components/editInstance'
+import Dns from './components/dns'
 
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-default.css';
@@ -39,7 +40,7 @@ const routes = [
     { path: '/projectEdit', component: ProjectEdit },
     { path: '/createProject', component: CreateProject },
     { path: '/editInstance', component: EditInstance},
-
+    { path: '/dns', component: Dns},
 ]
 const router = new VueRouter({
     //mode: 'history',
