@@ -17,6 +17,7 @@ import CreateVolume from './components/createVolume'
 import ProjectEdit from './components/projectEdit'
 import CreateProject from './components/createProject'
 
+import EditInstance from './components/editInstance'
 
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-default.css';
@@ -36,9 +37,10 @@ const routes = [
     { path: '/createInstance', component: CreateInstance },
     { path: '/createVolume', component: CreateVolume },
     { path: '/projectEdit', component: ProjectEdit },
-    { path: '/createProject', component: CreateProject }
-]
+    { path: '/createProject', component: CreateProject },
+    { path: '/editInstance', component: EditInstance },
 
+]
 const router = new VueRouter({
     //mode: 'history',
     routes

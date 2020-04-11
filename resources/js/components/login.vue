@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <h2>{{ title }}</h2>
+  <div class="app-page login-page p-4">
+    <h1 class="text-info mb-5">Open Stack</h1>
+    <Card title="Login">
     <form @submit.prevent="handleSubmit">
       <div class="form-group line">
         <div class="col-xs-4">
@@ -9,6 +10,7 @@
             type="text"
             v-model="userData.username"
             name="username"
+            placeholder="Username"
             class="form-control"
             required
           />
@@ -19,23 +21,31 @@
             type="password"
             v-model="userData.password"
             name="password"
+            placeholder="Password"
             class="form-control"
             required
           />
         </div>
       </div>
     </form>
-
-    <div
+<div
       id="error"
       class="alert alert-danger"
       role="alert"
       hidden
     >Please type your credentials to login</div>
-
     <div>
       <button type="button" class="btn btn-primary" v-on:click.prevent="login">Login</button>
     </div>
+    </Card>
+  </div>
+</template>
+  
+  <div>
+    <h2>{{ title }}</h2>
+    
+
+    
   </div>
 </template>
 <script>
