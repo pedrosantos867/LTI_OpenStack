@@ -58447,8 +58447,9 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
-    //url: "http://134.122.49.176",
-    url: "http://192.168.1.132",
+    url: "http://134.122.49.176",
+    //Maquina Remota
+    //url: "http://192.168.1.132",    //Máquina Pedro
     token: "",
     user: null,
     userID: null,
@@ -58459,8 +58460,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     currentInstance: null
   },
   mutations: {
-    //synch
-    //guardar token no Vuex e na session e adicionar o token aos headers do pedidos à API
+    //synch        
     setToken: function setToken(state, token) {
       state.token = token;
       sessionStorage.setItem('token', token);

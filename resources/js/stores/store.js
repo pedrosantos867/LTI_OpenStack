@@ -5,8 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        //url: "http://134.122.49.176",
-        url: "http://192.168.1.132",
+        url: "http://134.122.49.176", //Maquina Remota
+        //url: "http://192.168.1.132",    //Máquina Pedro
         token: "",
         user: null,
         userID: null,
@@ -16,9 +16,7 @@ export default new Vuex.Store({
         userPassword: null,
         currentInstance: null
     },
-    mutations: {//synch
-        
-        //guardar token no Vuex e na session e adicionar o token aos headers do pedidos à API
+    mutations: {//synch        
         setToken: (state, token) => {
             state.token = token;
             sessionStorage.setItem('token', token);
