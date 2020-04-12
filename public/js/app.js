@@ -2574,14 +2574,68 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       title: "DNS",
-      showCreateZone: false
+      showCreateZone: false,
+      zoneData: {
+        name: "",
+        description: "",
+        email: ""
+      }
     };
   },
   methods: {
+    createZone: function createZone() {
+      var _this = this;
+
+      var payload = {
+        name: this.zoneData.name,
+        email: this.zoneData.email,
+        description: this.zoneData.description
+      };
+      axios.post(this.$store.state.url + ":9001/v2/zones", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.token
+        }
+      }).then(function (response) {
+        console.log(response);
+
+        if (response.status == 202) {
+          Vue.$toast.open("Zona " + _this.zoneData.name + " created successfully!");
+          _this.showCreateZone = false;
+        }
+      })["catch"](function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      });
+    },
     showZones: function showZones() {
       axios.get(this.$store.state.url + ":9001/v2/zones", {
         headers: {
@@ -40252,11 +40306,94 @@ var render = function() {
     ),
     _vm._v(" "),
     _vm.showCreateZone
-      ? _c("div", [_vm._v("\n    " + _vm._s("Mostrar menu") + "\n  ")])
+      ? _c("div", [
+          _c("form", [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2),
+            _vm._v(" "),
+            _c("div", [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.createZone($event)
+                    }
+                  }
+                },
+                [_vm._v("Create")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.showCreateZone = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              )
+            ])
+          ])
+        ])
       : _vm._e()
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("label", { attrs: { for: "name" } }, [_vm._v("Zone name")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", id: "name", placeholder: "Enter zone name" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("label", { attrs: { for: "description" } }, [_vm._v("Description")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: {
+          type: "text",
+          id: "description",
+          placeholder: "Enter description"
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("label", { attrs: { for: "email" } }, [_vm._v("Email")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", id: "email", placeholder: "Enter email" }
+      })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -58414,8 +58551,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
