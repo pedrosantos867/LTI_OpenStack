@@ -19,7 +19,7 @@
             </li>
             <router-link  class="nav-link" to="/projectCreate" v-if="this.$store.state.token">Criar Projeto</router-link>
             <router-link  class="nav-link" to="/projectsList" v-if="this.$store.state.token">Lista de Projetos</router-link>
-
+            <router-link  class="nav-link" to="/dns" v-if="this.$store.state.token">DNS</router-link>
             <router-link  class="nav-link" to="/logout" v-if="this.$store.state.token">Logout</router-link>
         </ul>
     </div>
