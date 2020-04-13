@@ -6,7 +6,13 @@
     <button
       class="btn btn-primary"
       v-on:click="showCreateZone = !showCreateZone"
-    >Create new DNS Zone</button>
+    >Create new DNS Zone
+    </button>
+        <button
+      class="btn btn-primary"
+      v-on:click="deleteZone"
+    >Delete Zone
+    </button>
 
     <!-- Criar zona -->
     <div v-if="showCreateZone">
@@ -41,7 +47,8 @@ export default {
       zoneData: {
         name: "",
         description: "",
-        email: ""
+        email: "",
+        idZone: ""
       }
     };
   },
@@ -50,7 +57,8 @@ export default {
       let payload = {
         name: this.zoneData.name,
         email: this.zoneData.email,
-        description: this.zoneData.description
+        description: this.zoneData.description,
+
       };
       axios
         .post(this.$store.state.url + ":9001/v2/zones", payload, {
@@ -102,7 +110,47 @@ export default {
             console.log("Error", error.message);
           }
         });
-    }
+    },
+    deleteZone() {
+      let payload = {
+        name: this.zoneData.name,
+        email: this.zoneData.email,
+        description: this.zoneData.description,
+        idZone: this.zoneData.idZone
+      };
+               this.$store.state.url +
+            "/volume/v3/" +
+            this.$store.state.currentProjectID +
+            "/volumes",
+      axios
+        .delete(this.$store.state.url + ":9001/v2/zones"+ zoneData.idZone, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Auth-Token": this.$store.state.token
+          }
+        })
+        .then(response => {
+          console.log(response);
+          if (response.status == 202) {
+            Vue.$toast.open(
+              "Zona " + this.zoneData.name + " deleted successfully!"
+            );
+            this.showCreateZone = false;
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.headers);
+          } else if (error.request) {
+            console.log(error.request);
+          } else {
+            console.log("Error", error.message);
+          }
+        });
+    },
+
   },
   mounted() {}
 };

@@ -2591,6 +2591,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2599,7 +2605,8 @@ __webpack_require__.r(__webpack_exports__);
       zoneData: {
         name: "",
         description: "",
-        email: ""
+        email: "",
+        idZone: ""
       }
     };
   },
@@ -2644,6 +2651,39 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         console.log(response);
+      })["catch"](function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      });
+    },
+    deleteZone: function deleteZone() {
+      var _this2 = this;
+
+      var payload = {
+        name: this.zoneData.name,
+        email: this.zoneData.email,
+        description: this.zoneData.description,
+        idZone: this.zoneData.idZone
+      };
+      this.$store.state.url + "/volume/v3/" + this.$store.state.currentProjectID + "/volumes", axios["delete"](this.$store.state.url + ":9001/v2/zones" + zoneData.idZone, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": this.$store.state.token
+        }
+      }).then(function (response) {
+        console.log(response);
+
+        if (response.status == 202) {
+          Vue.$toast.open("Zona " + _this2.zoneData.name + " deleted successfully!");
+          _this2.showCreateZone = false;
+        }
       })["catch"](function (error) {
         if (error.response) {
           console.log(error.response.data);
@@ -40302,7 +40342,13 @@ var render = function() {
           }
         }
       },
-      [_vm._v("Create new DNS Zone")]
+      [_vm._v("Create new DNS Zone\n  ")]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      { staticClass: "btn btn-primary", on: { click: _vm.deleteZone } },
+      [_vm._v("Delete Zone\n  ")]
     ),
     _vm._v(" "),
     _vm.showCreateZone
@@ -58551,8 +58597,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\OpenStack\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\LTI_OpenStack\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
