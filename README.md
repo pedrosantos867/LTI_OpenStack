@@ -1,6 +1,6 @@
 ## Desenvolvimento de Aplicação com integração do orquestrador de recursos Openstack
-#### Trabalho Laboratorial nº 1
-### Licenciatura em Engenharia Informática
+### Trabalho Laboratorial nº 1
+#### Licenciatura em Engenharia Informática
 #### Laboratório de Tecnologias de Informação - 3º Ano, 2º Semestre
 
 A unidade curricular Laboratório de Tecnologias da Informação surge no terceiro ano
