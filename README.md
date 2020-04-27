@@ -16,8 +16,9 @@ através de pedidos HTTP à sua API.
 ## Built With
 
 * [Vue.js](https://vuejs.org/) - The web framework used
-* [Kubernets](https://kubernetes.io/en/) - Production-Grade Container Orchestration - Automated container deployment, scaling, and management
-* [Docker CE](https://www.docker.com/) - Free and open source containerization platform
+* [Openstack](http://www.OpenStack.org/) - Open source software for building private and public clouds
+* [OpenDev](https://opendev.org/) - Software used to deploy OpenStack
+* [OpenStack Documentation](https://docs.openstack.org/train/) - Documentation used
 
 ## License
 
